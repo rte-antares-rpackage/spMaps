@@ -44,16 +44,40 @@ summary(country_10m)
 plot(country_10m)
 
 # remove canaries from spain
-plot(country_10m[country_10m$adm0_a3 %in% "ESP",])
+# plot(country_10m[country_10m$adm0_a3 %in% "ESP",])
 
 pols_esp <- slot(country_10m, "polygons")[[which(country_10m$adm0_a3 %in% "ESP")]]
 
+sum_area <- 0
+# min_lat <- NA
+# max_lat <- NA
+# min_lon <- NA
+# max_lon <- NA
 keep_polygons <- sapply(country_10m[country_10m$adm0_a3 %in% "ESP", ]@polygons[[1]]@Polygons, function(x){
   # canaries : lattitude < 30
+  if(x@labpt[2] > 30){
+    sum_area <<- sum_area + x@area
+    # min_lon <<- min(min_lon, x@coords[, 1], na.rm = T)
+    # min_lat <<- min(min_lat, x@coords[, 2], na.rm = T)
+    # max_lon <<- max(max_lon, x@coords[, 1], na.rm = T)
+    # max_lat <<- max(max_lat, x@coords[, 2], na.rm = T)   
+  }
   x@labpt[2]>30
 })
 
+# new_bbox <- matrix(c(min_lon, max_lon, min_lat, max_lat), nrow = 2, ncol = 2, byrow = T, 
+#                    dimnames = list(c("x", "y"), c("min", "max")))
+
+new_order <- country_10m[country_10m$adm0_a3 %in% "ESP", ]@polygons[[1]]@plotOrder[which(keep_polygons)] 
+new_order[order(new_order)] <- 1:length(new_order)
+
+slot(pols_esp, "area") <- sum_area
+slot(pols_esp, "plotOrder") <- new_order
 slot(pols_esp, "Polygons") <- country_10m[country_10m$adm0_a3 %in% "ESP", ]@polygons[[1]]@Polygons[which(keep_polygons)] 
+
+# bug leaflet : have to reset comment...
+comment(pols_esp) <- rgeos::createPolygonsComment(pols_esp)
+
 slot(country_10m, "polygons")[[which(country_10m$adm0_a3 %in% "ESP")]] <- pols_esp 
 
 plot(country_10m[country_10m$adm0_a3 %in% "ESP",])
@@ -131,12 +155,48 @@ devtools::use_data(europe_states_provinces_10m, overwrite = T)
 #------------------------------------------------------------------------------------------#
 
 library(antaresViz)
+library(antaresMaps)
 
 ##comparaison de plusieurs graphiques
 pathS2<-"C:\\Users\\Datastorm\\Desktop\\antares\\test_case"
 setSimulationPath(pathS2,-1)
 myData1<-readAntares(areas = "all", links = "all")
 
-ml<-mapLayout(readLayout(), map=getMap(states = "FRA"))
-
+ml<-mapLayout(readLayout(), map=getMap())
 plotMap(myData1, ml)
+
+#-------------------
+# Identify leaflet bug with Spain
+#-------------------
+
+# require(leaflet)
+# ?leaflet
+
+# map=getMap(countries = c("ESP"))
+# 
+# str(map[map$name %in% 'France',])
+# str(map[map$name %in% 'Spain',])
+# 
+# s <- sp::polygons(map)
+# 
+# plot(s)
+# leaflet(map) %>% addPolygons()
+# 
+# leaflet:::derivePolygons
+# leaflet:::polygonData.SpatialPolygons
+# leaflet:::polygonData(s)
+# 
+# leaflet:::sp_bbox(s)
+# leaflet:::to_multipolygon_list.SpatialPolygons
+# 
+# pgons <- s@polygons[[1]]
+# comment(pgons)
+# rgeos::createPolygonsComment(pgons)
+# leaflet:::to_multipolygon.Polygons
+# lapply(pgons@polygons, to_multipolygon)
+# 
+# str(s)
+# s@polygons
+# pgons = leaflet:::derivePolygons(map, lng = NULL, lat = NULL, T, T, 
+#                        "addPolygons")
+# 
