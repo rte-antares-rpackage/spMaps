@@ -162,7 +162,7 @@ pathS2<-"C:\\Users\\Datastorm\\Desktop\\antares\\test_case"
 setSimulationPath(pathS2,-1)
 myData1<-readAntares(areas = "all", links = "all")
 
-ml<-mapLayout(readLayout(), map=getAntaresMap())
+ml<-mapLayout(readLayout())
 plotMap(myData1, ml)
 
 #-------------------

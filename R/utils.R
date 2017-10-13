@@ -1,7 +1,7 @@
 #' @rdname antaresMaps
 #' @export
 getEuropeReferenceTable <- function(){
-  data(europe_countries_ref)
+  data(europe_countries_ref, package = "antaresMaps")
   europe_countries_ref$name <- as.character(europe_countries_ref$name)
   europe_countries_ref$code <- as.character(europe_countries_ref$code)
   europe_countries_ref
@@ -85,7 +85,7 @@ getAntaresMap <- function(countries = "all", states = NULL){
   # countries
   if(!is.null(countries)){
     stopifnot(all(countries %in% c("all", ref_table$code)))
-    data(europe_countries_10m)
+    data(europe_countries_10m, package = "antaresMaps")
     if(!"all" %in% countries){
       countries_data <- europe_countries_10m[europe_countries_10m$adm0_a3 %in% countries, ]
     } else {
@@ -99,7 +99,7 @@ getAntaresMap <- function(countries = "all", states = NULL){
   if(!is.null(states)){
     stopifnot(all(states %in% c("all", ref_table$code)))
 
-    data(europe_states_provinces_10m)
+    data(europe_states_provinces_10m, package = "antaresMaps")
     if(!"all" %in% states){
       states_data <- europe_states_provinces_10m[europe_states_provinces_10m$sr_adm0_a3 %in% states, ]
     } else {
