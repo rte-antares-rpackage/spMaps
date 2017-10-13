@@ -25,20 +25,20 @@ getEuropeReferenceTable <- function(){
 #' @examples
 #'
 #' # default map : Europe without states
-#' europe_cty <- getMap()
+#' europe_cty <- getAntaresMap()
 #' plot(europe_cty)
 #'
 #' # subset on some countries
 #' ref_table <- getEuropeReferenceTable()
 #'
-#' italy_spain_fra <- getMap(countries = c("FRA", "ITA", "ESP"))
+#' italy_spain_fra <- getAntaresMap(countries = c("FRA", "ITA", "ESP"))
 #' plot(italy_spain_fra)
 #'
-#' italy_spain_fra_states <- getMap(countries = NULL, states = c("FRA", "ITA", "ESP"))
+#' italy_spain_fra_states <- getAntaresMap(countries = NULL, states = c("FRA", "ITA", "ESP"))
 #' plot(italy_spain_fra_states)
 #'
 #' # combine countries and states
-#' combine_map <- getMap(countries = c("ITA", "ESP"), states = "FRA")
+#' combine_map <- getAntaresMap(countries = c("ITA", "ESP"), states = "FRA")
 #' plot(combine_map)
 #'
 #' # build your custom map : you can use directly data
@@ -54,9 +54,9 @@ getEuropeReferenceTable <- function(){
 #' plot(gbr_states_districts)
 #'
 #' # combine with another map : you just have to have the same columns...
-#' # getMap only return "name" column
+#' # getAntaresMap only return "name" column
 #' custom_states <- rbind(
-#'     getMap(countries = NULL, states = "FRA"),
+#'     getAntaresMap(countries = NULL, states = "FRA"),
 #'     gbr_states_districts[, "name", drop = FALSE])
 #'
 #' plot(custom_states)
@@ -67,7 +67,7 @@ getEuropeReferenceTable <- function(){
 #'
 #' @name antaresMaps
 #'
-getMap <- function(countries = "all", states = NULL){
+getAntaresMap <- function(countries = "all", states = NULL){
 
   # controls
   if(is.null(countries) & is.null(states)){

@@ -3,12 +3,12 @@
 \name{getEuropeReferenceTable}
 \alias{getEuropeReferenceTable}
 \alias{antaresMaps}
-\alias{getMap}
+\alias{getAntaresMap}
 \title{Get custom Europe map (\code{SpatialPolygonsDataFrame})}
 \usage{
 getEuropeReferenceTable()
 
-getMap(countries = "all", states = NULL)
+getAntaresMap(countries = "all", states = NULL)
 }
 \arguments{
 \item{countries}{\code{character}. Vector of wanted countries, without details / states.
@@ -29,20 +29,20 @@ The output can be use in \link{mapLayout} with the \code{map} argument.
 \examples{
 
 # default map : Europe without states
-europe_cty <- getMap()
+europe_cty <- getAntaresMap()
 plot(europe_cty)
 
 # subset on some countries
 ref_table <- getEuropeReferenceTable()
 
-italy_spain_fra <- getMap(countries = c("FRA", "ITA", "ESP"))
+italy_spain_fra <- getAntaresMap(countries = c("FRA", "ITA", "ESP"))
 plot(italy_spain_fra)
 
-italy_spain_fra_states <- getMap(countries = NULL, states = c("FRA", "ITA", "ESP"))
+italy_spain_fra_states <- getAntaresMap(countries = NULL, states = c("FRA", "ITA", "ESP"))
 plot(italy_spain_fra_states)
 
 # combine countries and states
-combine_map <- getMap(countries = c("ITA", "ESP"), states = "FRA")
+combine_map <- getAntaresMap(countries = c("ITA", "ESP"), states = "FRA")
 plot(combine_map)
 
 # build your custom map : you can use directly data
@@ -58,9 +58,9 @@ gbr_states_districts <- europe_states_provinces_10m[
 plot(gbr_states_districts)
 
 # combine with another map : you just have to have the same columns...
-# getMap only return "name" column
+# getAntaresMap only return "name" column
 custom_states <- rbind(
-    getMap(countries = NULL, states = "FRA"),
+    getAntaresMap(countries = NULL, states = "FRA"),
     gbr_states_districts[, "name", drop = FALSE])
 
 plot(custom_states)

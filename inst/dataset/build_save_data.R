@@ -162,7 +162,7 @@ pathS2<-"C:\\Users\\Datastorm\\Desktop\\antares\\test_case"
 setSimulationPath(pathS2,-1)
 myData1<-readAntares(areas = "all", links = "all")
 
-ml<-mapLayout(readLayout(), map=getMap())
+ml<-mapLayout(readLayout(), map=getAntaresMap())
 plotMap(myData1, ml)
 
 #-------------------
@@ -172,7 +172,7 @@ plotMap(myData1, ml)
 # require(leaflet)
 # ?leaflet
 
-# map=getMap(countries = c("ESP"))
+# map=getAntaresMap(countries = c("ESP"))
 # 
 # str(map[map$name %in% 'France',])
 # str(map[map$name %in% 'Spain',])
