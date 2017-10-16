@@ -79,7 +79,14 @@ getAntaresMap <- function(countries = "all", states = NULL){
   ref_table <- getEuropeReferenceTable()
 
   # don't show countries if in states
-  countries <- setdiff(countries, states)
+  if("all" %in% countries & "all" %in% states){
+    countries <- NULL
+  } else if("all" %in% countries & !is.null(states)){
+    countries <- ref_table$code
+    countries <- setdiff(countries, states)
+  } else if(!is.null(countries) & !is.null(states)){
+    countries <- setdiff(countries, states)
+  }
   if(length(countries) == 0) countries <- NULL
 
   # countries
