@@ -1,16 +1,32 @@
 #' @rdname antaresMaps
 #' @export
+#' @importFrom utils data
+#' @import sp
+#' 
 getEuropeReferenceTable <- function(){
-  data(europe_countries_ref, package = "antaresMaps")
   europe_countries_ref$name <- as.character(europe_countries_ref$name)
   europe_countries_ref$code <- as.character(europe_countries_ref$code)
   europe_countries_ref
 }
 
+#' @rdname antaresMaps
+#' @export
+#' 
+getEuropeCountries <- function(){
+  europe_countries_10m
+}
+
+#' @rdname antaresMaps
+#' @export
+#' 
+getEuropeStates <- function(){
+  europe_states_provinces_10m
+}
+
 #' Get custom Europe map (\code{SpatialPolygonsDataFrame})
 #'
 #' This function builds a custom Europe map and return a \code{SpatialPolygonsDataFrame}.
-#' The output can be use in \link{mapLayout} with the \code{map} argument.
+#' The output can be use in link[antaresViz]{mapLayout} with the \code{map} argument.
 #'
 #' @param countries \code{character}. Vector of wanted countries, without details / states.
 #'   Must referred to \code{code} column of the reference table \code{getEuropeReferenceTable}.
@@ -24,6 +40,8 @@ getEuropeReferenceTable <- function(){
 #'
 #' @examples
 #'
+#' \dontrun{
+#' 
 #' # default map : Europe without states
 #' europe_cty <- getAntaresMap()
 #' plot(europe_cty)
@@ -43,14 +61,14 @@ getEuropeReferenceTable <- function(){
 #'
 #' # build your custom map : you can use directly data
 #' # to subset the area you really want
-#' data(europe_states_provinces_10m)
-#' data(europe_countries_10m)
+#' europe_states <- getEuropeStates()
+#' europe_countries <- getEuropeCountries()
 #'
 #' # for example, have a look to GBR states map
-#' summary(europe_states_provinces_10m)
-#' gbr_states_districts <- europe_states_provinces_10m[
-#'    europe_states_provinces_10m$sr_adm0_a3 %in% "GBR" &
-#'    europe_states_provinces_10m$type %in% "Administrative County",]
+#' summary(europe_states)
+#' gbr_states_districts <- europe_states[
+#'    europe_states$sr_adm0_a3 %in% "GBR" &
+#'    europe_states$type %in% "Administrative County",]
 #' plot(gbr_states_districts)
 #'
 #' # combine with another map : you just have to have the same columns...
@@ -60,10 +78,11 @@ getEuropeReferenceTable <- function(){
 #'     gbr_states_districts[, "name", drop = FALSE])
 #'
 #' plot(custom_states)
+#' 
+#' }
 #'
 #' @export
 #'
-#' @import sp
 #'
 #' @name antaresMaps
 #'
@@ -92,7 +111,6 @@ getAntaresMap <- function(countries = "all", states = NULL){
   # countries
   if(!is.null(countries)){
     stopifnot(all(countries %in% c("all", ref_table$code)))
-    data(europe_countries_10m, package = "antaresMaps")
     if(!"all" %in% countries){
       countries_data <- europe_countries_10m[europe_countries_10m$adm0_a3 %in% countries, ]
     } else {
@@ -105,8 +123,6 @@ getAntaresMap <- function(countries = "all", states = NULL){
   # states
   if(!is.null(states)){
     stopifnot(all(states %in% c("all", ref_table$code)))
-
-    data(europe_states_provinces_10m, package = "antaresMaps")
     if(!"all" %in% states){
       states_data <- europe_states_provinces_10m[europe_states_provinces_10m$sr_adm0_a3 %in% states, ]
     } else {

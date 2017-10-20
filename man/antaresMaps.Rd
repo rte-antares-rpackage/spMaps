@@ -2,11 +2,17 @@
 % Please edit documentation in R/utils.R
 \name{getEuropeReferenceTable}
 \alias{getEuropeReferenceTable}
+\alias{getEuropeCountries}
+\alias{getEuropeStates}
 \alias{antaresMaps}
 \alias{getAntaresMap}
 \title{Get custom Europe map (\code{SpatialPolygonsDataFrame})}
 \usage{
 getEuropeReferenceTable()
+
+getEuropeCountries()
+
+getEuropeStates()
 
 getAntaresMap(countries = "all", states = NULL)
 }
@@ -24,9 +30,11 @@ Must referred to \code{code} column of the reference table \code{getEuropeRefere
 }
 \description{
 This function builds a custom Europe map and return a \code{SpatialPolygonsDataFrame}.
-The output can be use in \link{mapLayout} with the \code{map} argument.
+The output can be use in link[antaresViz]{mapLayout} with the \code{map} argument.
 }
 \examples{
+
+\dontrun{
 
 # default map : Europe without states
 europe_cty <- getAntaresMap()
@@ -47,14 +55,14 @@ plot(combine_map)
 
 # build your custom map : you can use directly data
 # to subset the area you really want
-data(europe_states_provinces_10m)
-data(europe_countries_10m)
+europe_states <- getEuropeStates()
+europe_countries <- getEuropeCountries()
 
 # for example, have a look to GBR states map
-summary(europe_states_provinces_10m)
-gbr_states_districts <- europe_states_provinces_10m[
-   europe_states_provinces_10m$sr_adm0_a3 \%in\% "GBR" &
-   europe_states_provinces_10m$type \%in\% "Administrative County",]
+summary(europe_states)
+gbr_states_districts <- europe_states[
+   europe_states$sr_adm0_a3 \%in\% "GBR" &
+   europe_states$type \%in\% "Administrative County",]
 plot(gbr_states_districts)
 
 # combine with another map : you just have to have the same columns...
@@ -64,5 +72,7 @@ custom_states <- rbind(
     gbr_states_districts[, "name", drop = FALSE])
 
 plot(custom_states)
+
+}
 
 }
