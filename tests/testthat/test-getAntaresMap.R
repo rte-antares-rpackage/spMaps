@@ -7,8 +7,25 @@ test_that("Default map", {
 })
 
 test_that("Subset and combine", {
-  combine_map <- getAntaresMap(countries = c("ITA", "ESP"), states = "FRA")
+  combine_map <- getAntaresMap(countries = c("ITA", "ESP", "FRA"), states = "FRA")
   expect_is(combine_map, "SpatialPolygonsDataFrame")
+  
+  all_map <- getAntaresMap(countries = "all", states = "all")
+  expect_is(all_map, "SpatialPolygonsDataFrame")
+  
+  all_map_2 <- getAntaresMap(countries = "all", states = NULL)
+  expect_is(all_map, "SpatialPolygonsDataFrame")
+  
+  all_map_3 <- getAntaresMap(countries = NULL, states = "all")
+  expect_is(all_map, "SpatialPolygonsDataFrame")
+  
+  all_map_4 <- getAntaresMap(countries = "all", states = "FRA")
+  expect_is(all_map, "SpatialPolygonsDataFrame")
+  
+  all_map_5 <- getAntaresMap(countries = "FRA", states = "all")
+  expect_is(all_map, "SpatialPolygonsDataFrame")
+  
+  
 })
 
 test_that("NULL map", {
