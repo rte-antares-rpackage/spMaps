@@ -1,4 +1,5 @@
 require(rgdal)
+require(sp)
 
 # http://www.naturalearthdata.com/downloads/
 
@@ -98,8 +99,7 @@ europe_countries_ref <- data.frame(country_ref[, c("name", "adm0_a3")],
                                    stringsAsFactors = F)
 
 colnames(europe_countries_ref)[2] <- c("code")
-devtools::use_data(europe_countries_10m, overwrite = T)
-devtools::use_data(europe_countries_ref, overwrite = T)
+
 
 #----------------
 # states - 10m
@@ -149,7 +149,8 @@ europe_states_provinces_10m <- states_10m_europe[, c("admin", "sr_adm0_a3", "sr_
                                                      "region_cod")]
 summary(europe_states_provinces_10m)
 
-devtools::use_data(europe_states_provinces_10m, overwrite = T)
+devtools::use_data(europe_countries_10m, europe_countries_ref, 
+                   europe_states_provinces_10m, internal = TRUE, overwrite = T)
 
 
 #------------------------------------------------------------------------------------------#
@@ -162,7 +163,7 @@ pathS2<-"C:\\Users\\Datastorm\\Desktop\\antares\\test_case"
 setSimulationPath(pathS2,-1)
 myData1<-readAntares(areas = "all", links = "all")
 
-ml<-mapLayout(readLayout(), map=getAntaresMap())
+ml<-mapLayout(readLayout())
 plotMap(myData1, ml)
 
 #-------------------

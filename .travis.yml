@@ -1,0 +1,20 @@
+# R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
+
+language: R
+sudo: false
+cache: packages
+
+r_github_packages:
+  - hadley/devtools#1263
+  - rte-antares-rpackage/antares-rpackageRead
+
+include:
+  - r: release
+  - r: oldrel
+  - r: devel
+
+r_packages:
+  - covr
+
+after_success:
+  - Rscript -e 'library(covr); codecov()'
