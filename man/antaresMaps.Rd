@@ -30,7 +30,7 @@ Must referred to \code{code} column of the reference table \code{getEuropeRefere
 }
 \description{
 This function builds a custom Europe map and return a \code{SpatialPolygonsDataFrame}.
-The output can be use in link[antaresViz]{mapLayout} with the \code{map} argument.
+The output can be use in \link[antaresViz]{mapLayout} with the \code{map} argument.
 }
 \examples{
 

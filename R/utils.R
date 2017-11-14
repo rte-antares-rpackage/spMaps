@@ -26,7 +26,7 @@ getEuropeStates <- function(){
 #' Get custom Europe map (\code{SpatialPolygonsDataFrame})
 #'
 #' This function builds a custom Europe map and return a \code{SpatialPolygonsDataFrame}.
-#' The output can be use in link[antaresViz]{mapLayout} with the \code{map} argument.
+#' The output can be use in \link[antaresViz]{mapLayout} with the \code{map} argument.
 #'
 #' @param countries \code{character}. Vector of wanted countries, without details / states.
 #'   Must referred to \code{code} column of the reference table \code{getEuropeReferenceTable}.
