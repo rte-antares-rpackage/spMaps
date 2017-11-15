@@ -34,10 +34,15 @@ require(sp)
 
 country_10m_map <- readOGR(dsn = "C:\\Users\\Datastorm\\Downloads\\10m_cultural\\10m_cultural",
                        layer = "ne_10m_admin_0_map_units")
+# 
+# country_10m_ref <- readOGR(dsn = "C:\\Users\\Datastorm\\Downloads\\10m_cultural\\10m_cultural",
+#                        layer = "ne_10m_admin_0_countries")
 
-country_10m_ref <- readOGR(dsn = "C:\\Users\\Datastorm\\Downloads\\10m_cultural\\10m_cultural",
-                       layer = "ne_10m_admin_0_countries")
+country_10m_map <- readOGR(dsn = "C:\\Users\\Datastorm\\Downloads\\50m_cultural",
+                           layer = "ne_50m_admin_0_map_units")
 
+country_10m_ref <- readOGR(dsn = "C:\\Users\\Datastorm\\Downloads\\50m_cultural",
+                           layer = "ne_50m_admin_0_countries")
 # keep only Europe
 country_10m <- country_10m_map[country_10m_map$continent%in% "Europe", ]
 summary(country_10m)
@@ -84,10 +89,9 @@ slot(country_10m, "polygons")[[which(country_10m$adm0_a3 %in% "ESP")]] <- pols_e
 plot(country_10m[country_10m$adm0_a3 %in% "ESP",])
 
 # subset on columns
-europe_countries_10m <- country_10m[, c("name", "name_long", "admin", "adm0_a3",
+europe_countries_10m <- country_10m[, c("name", "admin", "adm0_a3",
                                         "adm0_a3_is","adm0_a3_us",
                                         "type",  "subunit",
-                                        "su_a3", "pop_est", "pop_year",
                                         "continent", "region_un",
                                         "subregion",  "sovereignt")]
 summary(europe_countries_10m)
@@ -145,8 +149,7 @@ plot(states_10m_europe[states_10m_europe$sr_adm0_a3 %in% "ESP", ])
 
 # subset on columns
 europe_states_provinces_10m <- states_10m_europe[, c("admin", "sr_adm0_a3", "sr_sov_a3", "adm1_code",
-                                                     "name", "type", "type_en", "code_local", "region",
-                                                     "region_cod")]
+                                                     "name", "type", "type_en", "region")]
 summary(europe_states_provinces_10m)
 
 devtools::use_data(europe_countries_10m, europe_countries_ref, 
