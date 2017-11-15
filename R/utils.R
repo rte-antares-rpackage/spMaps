@@ -40,8 +40,6 @@ getEuropeStates <- function(){
 #'
 #' @examples
 #'
-#' \dontrun{
-#' 
 #' # default map : Europe without states
 #' europe_cty <- getAntaresMap()
 #' plot(europe_cty)
@@ -52,6 +50,7 @@ getEuropeStates <- function(){
 #' italy_spain_fra <- getAntaresMap(countries = c("FRA", "ITA", "ESP"))
 #' plot(italy_spain_fra)
 #'
+#' \dontrun{
 #' italy_spain_fra_states <- getAntaresMap(countries = NULL, states = c("FRA", "ITA", "ESP"))
 #' plot(italy_spain_fra_states)
 #'

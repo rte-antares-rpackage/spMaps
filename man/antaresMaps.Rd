@@ -34,8 +34,6 @@ The output can be use in \link[antaresViz]{mapLayout} with the \code{map} argume
 }
 \examples{
 
-\dontrun{
-
 # default map : Europe without states
 europe_cty <- getAntaresMap()
 plot(europe_cty)
@@ -46,6 +44,7 @@ ref_table <- getEuropeReferenceTable()
 italy_spain_fra <- getAntaresMap(countries = c("FRA", "ITA", "ESP"))
 plot(italy_spain_fra)
 
+\dontrun{
 italy_spain_fra_states <- getAntaresMap(countries = NULL, states = c("FRA", "ITA", "ESP"))
 plot(italy_spain_fra_states)
 
