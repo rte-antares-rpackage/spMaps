@@ -9,7 +9,7 @@ Authors@R: c(
     person("RTE", role = "cph")
     )
 Maintainer: Jalal-Edine ZAWAM <jalal-edine.zawam@rte-france.com>
-Description: Build custom Europe SpatialPolygonsDataFrame by example for 'mapLayout()' in 'antaresViz'. Antares is a powerful software developed by RTE to simulate and study electric power systems (more information about Antares here : <https://antares.rte-france.com>).
+Description: Build custom Europe SpatialPolygonsDataFrame, if you don't know what is a SpatialPolygonsDataFrame see SpatialPolygons() in 'sp', by example for mapLayout() in 'antaresViz'. Antares is a powerful software developed by RTE to simulate and study electric power systems (more information about 'Antares' here: <https://antares.rte-france.com>).
 URL: https://github.com/rte-antares-rpackage/antaresMaps
 BugReports: https://github.com/rte-antares-rpackage/antaresMaps/issues
 License: GPL (>= 2) | file LICENSE 
