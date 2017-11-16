@@ -1,4 +1,4 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/rnf5iejmgyu00j1i?svg=true)](https://ci.appveyor.com/project/rte-antares-rpackage/antaresMaps)
+[![Build status](https://ci.appveyor.com/api/projects/status/cfjgghysd82xb99c?svg=true)](https://ci.appveyor.com/project/rte-antares-rpackage/antaresmaps)
 [![Build Status](https://travis-ci.org/rte-antares-rpackage/antaresMaps.svg?branch=master)](https://travis-ci.org/rte-antares-rpackage/antaresMaps)
 [![codecov](https://codecov.io/gh/rte-antares-rpackage/antaresMaps/branch/master/graph/badge.svg)](https://codecov.io/gh/rte-antares-rpackage/antaresMaps)
 
