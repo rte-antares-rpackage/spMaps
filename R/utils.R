@@ -1,4 +1,4 @@
-#' @rdname antaresMaps
+#' @rdname spMaps
 #' @export
 #' @importFrom utils data
 #' @import sp
@@ -9,14 +9,14 @@ getEuropeReferenceTable <- function(){
   europe_countries_ref
 }
 
-#' @rdname antaresMaps
+#' @rdname spMaps
 #' @export
 #' 
 getEuropeCountries <- function(){
   europe_countries_10m
 }
 
-#' @rdname antaresMaps
+#' @rdname spMaps
 #' @export
 #' 
 getEuropeStates <- function(){
@@ -26,7 +26,7 @@ getEuropeStates <- function(){
 #' Get custom Europe map (\code{SpatialPolygonsDataFrame})
 #'
 #' This function builds a custom Europe map and return a \code{SpatialPolygonsDataFrame}.
-#' The output can be use in \link[antaresViz]{mapLayout} with the \code{map} argument.
+#' The output can be use by example in \link[antaresViz]{mapLayout} with the \code{map} argument.
 #'
 #' @param countries \code{character}. Vector of wanted countries, without details / states.
 #'   Must referred to \code{code} column of the reference table \code{getEuropeReferenceTable}.
@@ -41,21 +41,21 @@ getEuropeStates <- function(){
 #' @examples
 #'
 #' # default map : Europe without states
-#' europe_cty <- getAntaresMap()
+#' europe_cty <- getSpMaps()
 #' plot(europe_cty)
 #'
 #' # subset on some countries
 #' ref_table <- getEuropeReferenceTable()
 #'
-#' italy_spain_fra <- getAntaresMap(countries = c("FRA", "ITA", "ESP"))
+#' italy_spain_fra <- getSpMaps(countries = c("FRA", "ITA", "ESP"))
 #' plot(italy_spain_fra)
 #'
 #' \dontrun{
-#' italy_spain_fra_states <- getAntaresMap(countries = NULL, states = c("FRA", "ITA", "ESP"))
+#' italy_spain_fra_states <- getSpMaps(countries = NULL, states = c("FRA", "ITA", "ESP"))
 #' plot(italy_spain_fra_states)
 #'
 #' # combine countries and states
-#' combine_map <- getAntaresMap(countries = c("ITA", "ESP"), states = "FRA")
+#' combine_map <- getSpMaps(countries = c("ITA", "ESP"), states = "FRA")
 #' plot(combine_map)
 #'
 #' # build your custom map : you can use directly data
@@ -71,9 +71,9 @@ getEuropeStates <- function(){
 #' plot(gbr_states_districts)
 #'
 #' # combine with another map : you just have to have the same columns...
-#' # getAntaresMap only return "name" column
+#' # getSpMaps only return "name" column
 #' custom_states <- rbind(
-#'     getAntaresMap(countries = NULL, states = "FRA"),
+#'     getSpMaps(countries = NULL, states = "FRA"),
 #'     gbr_states_districts[, "name", drop = FALSE])
 #'
 #' plot(custom_states)
@@ -83,9 +83,9 @@ getEuropeStates <- function(){
 #' @export
 #'
 #'
-#' @name antaresMaps
+#' @name spMaps
 #'
-getAntaresMap <- function(countries = "all", states = NULL){
+getSpMaps <- function(countries = "all", states = NULL){
 
   # controls
   if(is.null(countries) & is.null(states)){
