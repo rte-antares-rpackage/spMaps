@@ -1,4 +1,4 @@
 library(testthat)
-library(antaresMaps)
+library(spMaps)
 
-test_check("antaresMaps")
+test_check("spMaps")
