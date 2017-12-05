@@ -10,13 +10,15 @@
 \usage{
 getEuropeReferenceTable()
 
-getEuropeCountries()
+getEuropeCountries(mergeCountry = TRUE)
 
 getEuropeStates()
 
-getSpMaps(countries = "all", states = NULL)
+getSpMaps(countries = "all", states = NULL, mergeCountry = TRUE)
 }
 \arguments{
+\item{mergeCountry}{\code{boolean}. Merge country (UK, Belguim ...).}
+
 \item{countries}{\code{character}. Vector of wanted countries, without details / states.
 Must referred to \code{code} column of the reference table \code{getEuropeReferenceTable}.
 "all" (default) keep all countries}

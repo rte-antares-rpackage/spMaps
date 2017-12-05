@@ -10,10 +10,15 @@ getEuropeReferenceTable <- function(){
 }
 
 #' @rdname spMaps
+#' 
 #' @export
 #' 
-getEuropeCountries <- function(){
+#' @importFrom raster aggregate
+getEuropeCountries <- function(mergeCountry = TRUE){
   europe_countries_10m
+  europe_countries <- raster::aggregate(europe_countries_10m, by = c("adm0_a3", "admin"))
+  europe_countries$name <- europe_countries$admin
+  europe_countries
 }
 
 #' @rdname spMaps
@@ -35,6 +40,8 @@ getEuropeStates <- function(){
 #' @param states \code{character}. Vector of wanted countries, with details / states.
 #'   Must referred to \code{code} column of the reference table \code{getEuropeReferenceTable}.
 #'   "all" keep all countries. NULL as default.
+#'   
+#' @param mergeCountry \code{boolean}. Merge country (UK, Belguim ...).
 #'
 #' @return  \code{SpatialPolygonsDataFrame}
 #'
@@ -85,7 +92,7 @@ getEuropeStates <- function(){
 #'
 #' @name spMaps
 #'
-getSpMaps <- function(countries = "all", states = NULL){
+getSpMaps <- function(countries = "all", states = NULL, mergeCountry = TRUE){
 
   # controls
   if(is.null(countries) & is.null(states)){
@@ -111,9 +118,10 @@ getSpMaps <- function(countries = "all", states = NULL){
   if(!is.null(countries)){
     stopifnot(all(countries %in% c("all", ref_table$code)))
     if(!"all" %in% countries){
-      countries_data <- europe_countries_10m[europe_countries_10m$adm0_a3 %in% countries, ]
+      countries_data <- getEuropeCountries(mergeCountry = mergeCountry)
+      countries_data <- countries_data[countries_data$adm0_a3 %in% countries, ]
     } else {
-      countries_data <- europe_countries_10m
+      countries_data <- getEuropeCountries(mergeCountry = mergeCountry)
     }
   } else {
     countries_data <- NULL
