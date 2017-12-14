@@ -17,7 +17,7 @@ getEuropeStates()
 getSpMaps(countries = "all", states = NULL, mergeCountry = TRUE)
 }
 \arguments{
-\item{mergeCountry}{\code{boolean}. Merge country (UK, Belguim ...).}
+\item{mergeCountry}{\code{boolean}. Merge country ? (UK, Belgium ...). Default to TRUE.}
 
 \item{countries}{\code{character}. Vector of wanted countries, without details / states.
 Must referred to \code{code} column of the reference table \code{getEuropeReferenceTable}.

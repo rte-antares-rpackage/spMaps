@@ -13,12 +13,17 @@ getEuropeReferenceTable <- function(){
 #' 
 #' @export
 #' 
+#' @import rgeos
 #' @importFrom raster aggregate
 getEuropeCountries <- function(mergeCountry = TRUE){
   europe_countries_10m
-  europe_countries <- raster::aggregate(europe_countries_10m, by = c("adm0_a3", "admin"))
-  europe_countries$name <- europe_countries$admin
-  europe_countries
+  if(mergeCountry){
+    europe_countries <- raster::aggregate(europe_countries_10m, by = c("adm0_a3", "admin"))
+    europe_countries$name <- europe_countries$admin
+    return(europe_countries)
+  } else {
+    return(europe_countries_10m)
+  }
 }
 
 #' @rdname spMaps
@@ -41,7 +46,7 @@ getEuropeStates <- function(){
 #'   Must referred to \code{code} column of the reference table \code{getEuropeReferenceTable}.
 #'   "all" keep all countries. NULL as default.
 #'   
-#' @param mergeCountry \code{boolean}. Merge country (UK, Belguim ...).
+#' @param mergeCountry \code{boolean}. Merge country ? (UK, Belgium ...). Default to TRUE.
 #'
 #' @return  \code{SpatialPolygonsDataFrame}
 #'
@@ -93,16 +98,16 @@ getEuropeStates <- function(){
 #' @name spMaps
 #'
 getSpMaps <- function(countries = "all", states = NULL, mergeCountry = TRUE){
-
+  
   # controls
   if(is.null(countries) & is.null(states)){
     message("No countries and no states selected")
     return(NULL)
   }
-
+  
   # reference table
   ref_table <- getEuropeReferenceTable()
-
+  
   # don't show countries if in states
   if("all" %in% countries & "all" %in% states){
     countries <- NULL
@@ -113,7 +118,7 @@ getSpMaps <- function(countries = "all", states = NULL, mergeCountry = TRUE){
     countries <- setdiff(countries, states)
   }
   if(length(countries) == 0) countries <- NULL
-
+  
   # countries
   if(!is.null(countries)){
     stopifnot(all(countries %in% c("all", ref_table$code)))
@@ -126,7 +131,7 @@ getSpMaps <- function(countries = "all", states = NULL, mergeCountry = TRUE){
   } else {
     countries_data <- NULL
   }
-
+  
   # states
   if(!is.null(states)){
     stopifnot(all(states %in% c("all", ref_table$code)))
@@ -138,7 +143,7 @@ getSpMaps <- function(countries = "all", states = NULL, mergeCountry = TRUE){
   } else {
     states_data <- NULL
   }
-
+  
   if(!is.null(countries_data) & is.null(states_data)){
     return(countries_data[, c("name"), drop = FALSE])
   } else if(is.null(countries_data) & !is.null(states_data)){
@@ -148,4 +153,3 @@ getSpMaps <- function(countries = "all", states = NULL, mergeCountry = TRUE){
                  states_data[, c("name"), drop = FALSE]))
   }
 }
-
