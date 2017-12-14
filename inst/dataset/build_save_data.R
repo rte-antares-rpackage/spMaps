@@ -107,8 +107,10 @@ europe_countries_10m <- country_10m[, c("name", "admin", "adm0_a3",
 summary(europe_countries_10m)
 plot(europe_countries_10m)
 
+names(europe_countries_10m) <- gsub("^adm0_a3$", "code", names(europe_countries_10m))
+
 # ref table
-europe_countries_ref <- unique(data.frame(europe_countries_10m[, c("admin", "adm0_a3")],
+europe_countries_ref <- unique(data.frame(europe_countries_10m[, c("admin", "code")],
                                      stringsAsFactors = F))
 colnames(europe_countries_ref) <- c("name", "code")
 
@@ -123,7 +125,7 @@ colnames(europe_countries_ref) <- c("name", "code")
 states_10m <- readOGR(dsn = "C:\\Users\\Datastorm\\Downloads\\10m_cultural\\10m_cultural",
                       layer = "ne_10m_admin_1_states_provinces_lakes_shp")
 # subset on Europe
-states_10m_europe <- states_10m[states_10m$sr_adm0_a3%in% europe_countries_10m$adm0_a3 | 
+states_10m_europe <- states_10m[states_10m$sr_adm0_a3%in% europe_countries_10m$code | 
                                   states_10m$admin %in% c("Cyprus", "Northern Cyprus"), ]
 summary(states_10m_europe)
 
@@ -172,6 +174,8 @@ europe_states_provinces_10m <- states_10m_europe[, c("admin", "sr_adm0_a3", "sr_
                                                      "name", "type", "type_en", "region")]
 summary(europe_states_provinces_10m)
 
+names(europe_states_provinces_10m) <- gsub("^sr_adm0_a3$", "code", names(europe_states_provinces_10m))
+
 devtools::use_data(europe_countries_10m, europe_countries_ref, 
                    europe_states_provinces_10m, internal = TRUE, overwrite = T)
 
@@ -179,7 +183,7 @@ devtools::use_data(europe_countries_10m, europe_countries_ref,
 #------------------------------------------------------------------------------------------#
 
 library(antaresViz)
-library(antaresMaps)
+library(spMaps)
 
 ##comparaison de plusieurs graphiques
 pathS2<-"C:\\Users\\Datastorm\\Desktop\\antares\\test_case"

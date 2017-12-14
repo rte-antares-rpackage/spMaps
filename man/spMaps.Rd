@@ -62,15 +62,15 @@ europe_countries <- getEuropeCountries()
 # for example, have a look to GBR states map
 summary(europe_states)
 gbr_states_districts <- europe_states[
-   europe_states$sr_adm0_a3 \%in\% "GBR" &
+   europe_states$code \%in\% "GBR" &
    europe_states$type \%in\% "Administrative County",]
 plot(gbr_states_districts)
 
 # combine with another map : you just have to have the same columns...
-# getSpMaps only return "name" column
+# getSpMaps only return "name" and "code" column
 custom_states <- rbind(
     getSpMaps(countries = NULL, states = "FRA"),
-    gbr_states_districts[, "name", drop = FALSE])
+    gbr_states_districts[, c("name", "code"), drop = FALSE])
 
 plot(custom_states)
 
