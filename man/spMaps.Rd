@@ -4,8 +4,8 @@
 \alias{getEuropeReferenceTable}
 \alias{getEuropeCountries}
 \alias{getEuropeStates}
-\alias{antaresMaps}
-\alias{getAntaresMap}
+\alias{spMaps}
+\alias{getSpMaps}
 \title{Get custom Europe map (\code{SpatialPolygonsDataFrame})}
 \usage{
 getEuropeReferenceTable()
@@ -14,7 +14,7 @@ getEuropeCountries()
 
 getEuropeStates()
 
-getAntaresMap(countries = "all", states = NULL)
+getSpMaps(countries = "all", states = NULL)
 }
 \arguments{
 \item{countries}{\code{character}. Vector of wanted countries, without details / states.
@@ -30,27 +30,26 @@ Must referred to \code{code} column of the reference table \code{getEuropeRefere
 }
 \description{
 This function builds a custom Europe map and return a \code{SpatialPolygonsDataFrame}.
-The output can be use in \link[antaresViz]{mapLayout} with the \code{map} argument.
+The output can be use by example in \link[antaresViz]{mapLayout} with the \code{map} argument.
 }
 \examples{
 
-\dontrun{
-
 # default map : Europe without states
-europe_cty <- getAntaresMap()
+europe_cty <- getSpMaps()
 plot(europe_cty)
 
 # subset on some countries
 ref_table <- getEuropeReferenceTable()
 
-italy_spain_fra <- getAntaresMap(countries = c("FRA", "ITA", "ESP"))
+italy_spain_fra <- getSpMaps(countries = c("FRA", "ITA", "ESP"))
 plot(italy_spain_fra)
 
-italy_spain_fra_states <- getAntaresMap(countries = NULL, states = c("FRA", "ITA", "ESP"))
+\dontrun{
+italy_spain_fra_states <- getSpMaps(countries = NULL, states = c("FRA", "ITA", "ESP"))
 plot(italy_spain_fra_states)
 
 # combine countries and states
-combine_map <- getAntaresMap(countries = c("ITA", "ESP"), states = "FRA")
+combine_map <- getSpMaps(countries = c("ITA", "ESP"), states = "FRA")
 plot(combine_map)
 
 # build your custom map : you can use directly data
@@ -66,9 +65,9 @@ gbr_states_districts <- europe_states[
 plot(gbr_states_districts)
 
 # combine with another map : you just have to have the same columns...
-# getAntaresMap only return "name" column
+# getSpMaps only return "name" column
 custom_states <- rbind(
-    getAntaresMap(countries = NULL, states = "FRA"),
+    getSpMaps(countries = NULL, states = "FRA"),
     gbr_states_districts[, "name", drop = FALSE])
 
 plot(custom_states)
