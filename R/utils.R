@@ -10,10 +10,20 @@ getEuropeReferenceTable <- function(){
 }
 
 #' @rdname spMaps
+#' 
 #' @export
 #' 
-getEuropeCountries <- function(){
+#' @import rgeos
+#' @importFrom raster aggregate
+getEuropeCountries <- function(mergeCountry = TRUE){
   europe_countries_10m
+  if(mergeCountry){
+    europe_countries <- raster::aggregate(europe_countries_10m, by = c("code", "admin"))
+    europe_countries$name <- europe_countries$admin
+    return(europe_countries)
+  } else {
+    return(europe_countries_10m)
+  }
 }
 
 #' @rdname spMaps
@@ -35,6 +45,8 @@ getEuropeStates <- function(){
 #' @param states \code{character}. Vector of wanted countries, with details / states.
 #'   Must referred to \code{code} column of the reference table \code{getEuropeReferenceTable}.
 #'   "all" keep all countries. NULL as default.
+#'   
+#' @param mergeCountry \code{boolean}. Merge country ? (UK, Belgium ...). Default to TRUE.
 #'
 #' @return  \code{SpatialPolygonsDataFrame}
 #'
@@ -66,15 +78,15 @@ getEuropeStates <- function(){
 #' # for example, have a look to GBR states map
 #' summary(europe_states)
 #' gbr_states_districts <- europe_states[
-#'    europe_states$sr_adm0_a3 %in% "GBR" &
+#'    europe_states$code %in% "GBR" &
 #'    europe_states$type %in% "Administrative County",]
 #' plot(gbr_states_districts)
 #'
 #' # combine with another map : you just have to have the same columns...
-#' # getSpMaps only return "name" column
+#' # getSpMaps only return "name" and "code" column
 #' custom_states <- rbind(
 #'     getSpMaps(countries = NULL, states = "FRA"),
-#'     gbr_states_districts[, "name", drop = FALSE])
+#'     gbr_states_districts[, c("name", "code"), drop = FALSE])
 #'
 #' plot(custom_states)
 #' 
@@ -85,17 +97,17 @@ getEuropeStates <- function(){
 #'
 #' @name spMaps
 #'
-getSpMaps <- function(countries = "all", states = NULL){
-
+getSpMaps <- function(countries = "all", states = NULL, mergeCountry = TRUE){
+  
   # controls
   if(is.null(countries) & is.null(states)){
     message("No countries and no states selected")
     return(NULL)
   }
-
+  
   # reference table
   ref_table <- getEuropeReferenceTable()
-
+  
   # don't show countries if in states
   if("all" %in% countries & "all" %in% states){
     countries <- NULL
@@ -106,38 +118,38 @@ getSpMaps <- function(countries = "all", states = NULL){
     countries <- setdiff(countries, states)
   }
   if(length(countries) == 0) countries <- NULL
-
+  
   # countries
   if(!is.null(countries)){
     stopifnot(all(countries %in% c("all", ref_table$code)))
     if(!"all" %in% countries){
-      countries_data <- europe_countries_10m[europe_countries_10m$adm0_a3 %in% countries, ]
+      countries_data <- getEuropeCountries(mergeCountry = mergeCountry)
+      countries_data <- countries_data[countries_data$code %in% countries, ]
     } else {
-      countries_data <- europe_countries_10m
+      countries_data <- getEuropeCountries(mergeCountry = mergeCountry)
     }
   } else {
     countries_data <- NULL
   }
-
+  
   # states
   if(!is.null(states)){
     stopifnot(all(states %in% c("all", ref_table$code)))
     if(!"all" %in% states){
-      states_data <- europe_states_provinces_10m[europe_states_provinces_10m$sr_adm0_a3 %in% states, ]
+      states_data <- europe_states_provinces_10m[europe_states_provinces_10m$code %in% states, ]
     } else {
       states_data <- europe_states_provinces_10m
     }
   } else {
     states_data <- NULL
   }
-
+  
   if(!is.null(countries_data) & is.null(states_data)){
-    return(countries_data[, c("name"), drop = FALSE])
+    return(countries_data[, c("name", "code"), drop = FALSE])
   } else if(is.null(countries_data) & !is.null(states_data)){
-    return(states_data[, c("name"), drop = FALSE])
+    return(states_data[, c("name", "code"), drop = FALSE])
   } else {
-    return(rbind(countries_data[, c("name"), drop = FALSE],
-                 states_data[, c("name"), drop = FALSE]))
+    return(rbind(countries_data[, c("name", "code"), drop = FALSE],
+                 states_data[, c("name", "code"), drop = FALSE]))
   }
 }
-

@@ -10,13 +10,15 @@
 \usage{
 getEuropeReferenceTable()
 
-getEuropeCountries()
+getEuropeCountries(mergeCountry = TRUE)
 
 getEuropeStates()
 
-getSpMaps(countries = "all", states = NULL)
+getSpMaps(countries = "all", states = NULL, mergeCountry = TRUE)
 }
 \arguments{
+\item{mergeCountry}{\code{boolean}. Merge country ? (UK, Belgium ...). Default to TRUE.}
+
 \item{countries}{\code{character}. Vector of wanted countries, without details / states.
 Must referred to \code{code} column of the reference table \code{getEuropeReferenceTable}.
 "all" (default) keep all countries}
@@ -60,15 +62,15 @@ europe_countries <- getEuropeCountries()
 # for example, have a look to GBR states map
 summary(europe_states)
 gbr_states_districts <- europe_states[
-   europe_states$sr_adm0_a3 \%in\% "GBR" &
+   europe_states$code \%in\% "GBR" &
    europe_states$type \%in\% "Administrative County",]
 plot(gbr_states_districts)
 
 # combine with another map : you just have to have the same columns...
-# getSpMaps only return "name" column
+# getSpMaps only return "name" and "code" column
 custom_states <- rbind(
     getSpMaps(countries = NULL, states = "FRA"),
-    gbr_states_districts[, "name", drop = FALSE])
+    gbr_states_districts[, c("name", "code"), drop = FALSE])
 
 plot(custom_states)
 

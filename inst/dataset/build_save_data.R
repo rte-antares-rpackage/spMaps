@@ -41,13 +41,23 @@ country_10m_map <- readOGR(dsn = "C:\\Users\\Datastorm\\Downloads\\10m_cultural\
 country_10m_map <- readOGR(dsn = "C:\\Users\\Datastorm\\Downloads\\50m_cultural",
                            layer = "ne_50m_admin_0_map_units")
 
-country_10m_ref <- readOGR(dsn = "C:\\Users\\Datastorm\\Downloads\\50m_cultural",
-                           layer = "ne_50m_admin_0_countries")
-# keep only Europe
-country_10m <- country_10m_map[country_10m_map$continent%in% "Europe", ]
+# country_10m_ref <- readOGR(dsn = "C:\\Users\\Datastorm\\Downloads\\50m_cultural",
+#                            layer = "ne_50m_admin_0_countries")
+# keep only Europe + Turquie
+country_10m <- country_10m_map[country_10m_map$continent%in% "Europe" | 
+                                 country_10m_map$name_long %in% c("Turkey", "Cyprus"), ]
 summary(country_10m)
 
 plot(country_10m)
+plot(country_10m[country_10m$name_long %in% "Cyprus",])
+
+# chypre : fusion avec la chypre du nors
+country_10m_cyprus <- country_10m_map[country_10m_map$name_long %in% c("Cyprus", "Northern Cyprus"), ]
+country_10m_cyprus <- raster::aggregate(country_10m_cyprus, by = c("adm0_a3_is"))
+plot(country_10m_cyprus)
+
+slot(country_10m, "polygons")[[which(country_10m$name_long %in% "Cyprus")]] <- slot(country_10m_cyprus, "polygons")[[1]]
+plot(country_10m[country_10m$name_long %in% "Cyprus",])
 
 # remove canaries from spain
 # plot(country_10m[country_10m$adm0_a3 %in% "ESP",])
@@ -97,12 +107,12 @@ europe_countries_10m <- country_10m[, c("name", "admin", "adm0_a3",
 summary(europe_countries_10m)
 plot(europe_countries_10m)
 
-# ref table
-country_ref <- country_10m_ref[country_10m_ref$continent%in% "Europe", ]
-europe_countries_ref <- data.frame(country_ref[, c("name", "adm0_a3")],
-                                   stringsAsFactors = F)
+names(europe_countries_10m) <- gsub("^adm0_a3$", "code", names(europe_countries_10m))
 
-colnames(europe_countries_ref)[2] <- c("code")
+# ref table
+europe_countries_ref <- unique(data.frame(europe_countries_10m[, c("admin", "code")],
+                                     stringsAsFactors = F))
+colnames(europe_countries_ref) <- c("name", "code")
 
 
 #----------------
@@ -115,11 +125,23 @@ colnames(europe_countries_ref)[2] <- c("code")
 states_10m <- readOGR(dsn = "C:\\Users\\Datastorm\\Downloads\\10m_cultural\\10m_cultural",
                       layer = "ne_10m_admin_1_states_provinces_lakes_shp")
 # subset on Europe
-states_10m_europe <- states_10m[states_10m$sr_adm0_a3%in% europe_countries_10m$adm0_a3, ]
+states_10m_europe <- states_10m[states_10m$sr_adm0_a3%in% europe_countries_10m$code | 
+                                  states_10m$admin %in% c("Cyprus", "Northern Cyprus"), ]
 summary(states_10m_europe)
 
 table(states_10m_europe$type_en)
 plot(states_10m_europe)
+
+plot(states_10m_europe[states_10m_europe$admin %in% "Cyprus", ])
+plot(states_10m_europe[states_10m_europe$admin %in% c("Cyprus", "Northern Cyprus"), ])
+
+summary(states_10m_europe[states_10m_europe$admin %in% c("Cyprus", "Northern Cyprus"), ])
+
+# chypre : fusion avec la chypre du nors
+levels(states_10m_europe$admin) <- gsub("Northern Cyprus", "Cyprus", levels(states_10m_europe$admin))
+levels(states_10m_europe$sr_adm0_a3) <- gsub("^CYN$", "CYP", levels(states_10m_europe$sr_adm0_a3))
+
+plot(states_10m_europe[states_10m_europe$admin %in% c("Cyprus"), ])
 
 # remove islands from france
 plot(states_10m_europe[states_10m_europe$sr_adm0_a3 %in% "FRA", ])
@@ -152,6 +174,8 @@ europe_states_provinces_10m <- states_10m_europe[, c("admin", "sr_adm0_a3", "sr_
                                                      "name", "type", "type_en", "region")]
 summary(europe_states_provinces_10m)
 
+names(europe_states_provinces_10m) <- gsub("^sr_adm0_a3$", "code", names(europe_states_provinces_10m))
+
 devtools::use_data(europe_countries_10m, europe_countries_ref, 
                    europe_states_provinces_10m, internal = TRUE, overwrite = T)
 
@@ -159,7 +183,7 @@ devtools::use_data(europe_countries_10m, europe_countries_ref,
 #------------------------------------------------------------------------------------------#
 
 library(antaresViz)
-library(antaresMaps)
+library(spMaps)
 
 ##comparaison de plusieurs graphiques
 pathS2<-"C:\\Users\\Datastorm\\Desktop\\antares\\test_case"
@@ -169,14 +193,15 @@ myData1<-readAntares(areas = "all", links = "all")
 ml<-mapLayout(readLayout())
 plotMap(myData1, ml)
 
+plotMapLayout(ml)
+
 #-------------------
 # Identify leaflet bug with Spain
 #-------------------
 
 # require(leaflet)
-# ?leaflet
-
-# map=getAntaresMap(countries = c("ESP"))
+# 
+# map=getSpMaps(countries = c("ESP"))
 # 
 # str(map[map$name %in% 'France',])
 # str(map[map$name %in% 'Spain',])
