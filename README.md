@@ -1,10 +1,10 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/cfjgghysd82xb99c?svg=true)](https://ci.appveyor.com/project/rte-antares-rpackage/antaresmaps)
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/spMaps)](https://cran.r-project.org/package=spMaps)[![Build status](https://ci.appveyor.com/api/projects/status/cfjgghysd82xb99c?svg=true)](https://ci.appveyor.com/project/rte-antares-rpackage/antaresmaps)
 [![Build Status](https://travis-ci.org/rte-antares-rpackage/antaresMaps.svg?branch=master)](https://travis-ci.org/rte-antares-rpackage/antaresMaps)
 [![codecov](https://codecov.io/gh/rte-antares-rpackage/antaresMaps/branch/master/graph/badge.svg)](https://codecov.io/gh/rte-antares-rpackage/antaresMaps)
 
-# The 'antaresMaps' R package
+# The 'spMaps' R package
 
-The `antaresMaps` package provides functions allow to build custom maps to using `antaresViz` (`mapLayout`).
+The `spMaps` package provides functions allow to build custom maps.
 
 ## Installation
 
@@ -12,14 +12,14 @@ The `antaresMaps` package provides functions allow to build custom maps to using
 To install the current version:
 
 ```r
-install_github("rte-antares-rpackage/antaresMaps", ref = "master")
+install_github("rte-antares-rpackage/spMaps", ref = "master")
 ```
 
 To display the help of the package and see all the functions it provides, type:
   
   
 ```r 
-?antaresMaps
+?spMaps
 ```
 
 ## License Information:
