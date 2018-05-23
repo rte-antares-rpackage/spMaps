@@ -1,4 +1,9 @@
-Copyright © 2016 RTE Réseau de transport d’électricité
+Copyright © 2016 RTE Réseau de transport d électricité
+
+Changes in version 0.3 (2018-05-03)
+
+BUGFIXES:
+* CRAN : Some checks were failing.
 
 Changes in version 0.2 (2017-12-15)
 
