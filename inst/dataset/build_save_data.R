@@ -32,8 +32,8 @@ require(sp)
 # countries - 10m
 #----------------
 
-country_10m_map <- readOGR(dsn = "C:\\Users\\Datastorm\\Downloads\\10m_cultural\\10m_cultural",
-                       layer = "ne_10m_admin_0_map_units")
+# country_10m_map <- readOGR(dsn = "C:\\Users\\Datastorm\\Downloads\\10m_cultural\\10m_cultural",
+#                        layer = "ne_10m_admin_0_map_units")
 # 
 # country_10m_ref <- readOGR(dsn = "C:\\Users\\Datastorm\\Downloads\\10m_cultural\\10m_cultural",
 #                        layer = "ne_10m_admin_0_countries")
@@ -41,14 +41,34 @@ country_10m_map <- readOGR(dsn = "C:\\Users\\Datastorm\\Downloads\\10m_cultural\
 country_10m_map <- readOGR(dsn = "C:\\Users\\Datastorm\\Downloads\\50m_cultural",
                            layer = "ne_50m_admin_0_map_units")
 
+plot(country_10m_map[country_10m_map$name_long %in% "Greece",])
+
+
 # country_10m_ref <- readOGR(dsn = "C:\\Users\\Datastorm\\Downloads\\50m_cultural",
 #                            layer = "ne_50m_admin_0_countries")
 # keep only Europe + Turquie
+add_ct <- c("Turkey", 
+            "Cyprus", 
+            "Federation of Bosnia and Herzegovina",
+            "Algeria", 
+            "Egypt",
+            "Israel",
+            "Iran",
+            "Iraq",
+            "Jordan",
+            "Lebanon",
+            "Libya",
+            "Morocco",
+            "Gaza", 
+            "Saudi Arabia",
+            "Syria",
+            "Tunisia",
+            "United Arab Emirates",
+            "Qatar"
+)
 country_10m <- country_10m_map[country_10m_map$continent%in% "Europe" | 
-                                 country_10m_map$name_long %in% c("Turkey", "Cyprus"), ]
-summary(country_10m)
+                                 country_10m_map$name_long %in% add_ct, ]
 
-plot(country_10m)
 plot(country_10m[country_10m$name_long %in% "Cyprus",])
 
 # chypre : fusion avec la chypre du nors
@@ -111,7 +131,7 @@ names(europe_countries_10m) <- gsub("^adm0_a3$", "code", names(europe_countries_
 
 # ref table
 europe_countries_ref <- unique(data.frame(europe_countries_10m[, c("admin", "code")],
-                                     stringsAsFactors = F))
+                                          stringsAsFactors = F))
 colnames(europe_countries_ref) <- c("name", "code")
 
 
@@ -126,7 +146,7 @@ states_10m <- readOGR(dsn = "C:\\Users\\Datastorm\\Downloads\\10m_cultural\\10m_
                       layer = "ne_10m_admin_1_states_provinces_lakes_shp")
 # subset on Europe
 states_10m_europe <- states_10m[states_10m$sr_adm0_a3%in% europe_countries_10m$code | 
-                                  states_10m$admin %in% c("Cyprus", "Northern Cyprus"), ]
+                                  states_10m$admin %in% add_ct, ]
 summary(states_10m_europe)
 
 table(states_10m_europe$type_en)
