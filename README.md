@@ -12,7 +12,13 @@ The `spMaps` package provides functions allow to build custom maps.
 To install the current version:
 
 ```r
-install_github("rte-antares-rpackage/spMaps", ref = "master")
+if(!require(remotes)){
+  install.packages("remotes")
+  require(remotes)
+}
+
+Sys.setenv(R_REMOTES_NO_ERRORS_FROM_WARNINGS = "true")
+remotes::install_github("rte-antares-rpackage/spMaps", ref = "med-tso")
 ```
 
 To display the help of the package and see all the functions it provides, type:

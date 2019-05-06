@@ -59,19 +59,113 @@ add_ct <- c("Turkey",
             "Lebanon",
             "Libya",
             "Morocco",
-            "Gaza", 
             "Saudi Arabia",
             "Syria",
             "Tunisia",
             "United Arab Emirates",
-            "Qatar"
+            "Qatar",
+            "Gaza"
 )
+
 country_10m <- country_10m_map[country_10m_map$continent%in% "Europe" | 
                                  country_10m_map$name_long %in% add_ct, ]
 
+plot(country_10m)
+
+# merge Gaza et West Bank = Palestine
+plot(country_10m_map[country_10m_map$name_long %in% c("West Bank", "Gaza"),])
+
+country_10m_pal <- country_10m_map[country_10m_map$name_long %in% c("West Bank", "Gaza"), ]
+country_10m_pal <- raster::aggregate(country_10m_pal, by = c("adm0_a3_is"))
+plot(country_10m_pal)
+
+slot(country_10m, "polygons")[[which(country_10m$name_long %in% "Gaza")]] <- slot(country_10m_pal, "polygons")[[1]]
+country_10m@data$name <- as.character(country_10m@data$name)
+country_10m@data$name_long <- as.character(country_10m@data$name_long)
+country_10m@data$name[country_10m$name_long %in% "Gaza"] <- "Palestine"
+country_10m@data$name_long[country_10m$name_long %in% "Gaza"] <- "Palestine"
+
+plot(country_10m[country_10m$name_long %in% "Palestine",])
+
+#-----------------------
+# isolation de la corse
+country_10m_fr <- country_10m_map[country_10m_map$name_long %in% "France",]
+
+country_10m_fr_pol <- raster::disaggregate(country_10m_fr)
+plot(country_10m_fr_pol[1, ])
+plot(country_10m_fr_pol[2, ])
+plot(country_10m_fr_pol[3, ])
+
+# modification de la France
+slot(country_10m, "polygons")[[which(country_10m$name_long %in% "France")]] <- slot(country_10m_fr_pol, "polygons")[[3]]
+plot(country_10m[country_10m$name_long %in% "France",])
+
+# creation de la corse
+sp_corse <- country_10m_map[country_10m_map$name_long %in% "France",]
+slot(sp_corse, "polygons")[[which(sp_corse$name_long %in% "France")]] <- slot(country_10m_fr_pol, "polygons")[[1]]
+
+sp_corse@data[, c("name", "admin", "adm0_a3",
+                  "adm0_a3_is","adm0_a3_us",
+                  "type",  "subunit",
+                  "continent", "region_un",
+                  "subregion",  "sovereignt")]
+
+sp_corse@data$name <- "Corsica"
+sp_corse@data$name_long <- "Corsica"
+sp_corse@data$admin <- "Corsica"
+sp_corse@data$adm0_a3 <- "COR"
+sp_corse@data$adm0_a3_is <- "COR"
+sp_corse@data$adm0_a3_us <- "COR"
+
+country_10m <- rbind(country_10m, sp_corse)
+
+plot(country_10m)
+plot(country_10m[country_10m$name_long %in% "France",])
+plot(country_10m[country_10m$name_long %in% "Corse",])
+
+#-----------------------
+# isolation de la crete
+country_10m_gr <- country_10m_map[country_10m_map$name_long %in% "Greece",]
+
+plot(country_10m_gr)
+country_10m_gr_pol <- raster::disaggregate(country_10m_gr)
+
+# for(i in 1:nrow(country_10m_gr_pol)){
+#   par(ask = T)
+#   plot(country_10m_gr_pol[i, ], main = i)
+# }
+
+# modification de la France
+sp_greece <- raster::aggregate(country_10m_gr_pol[-1,])
+slot(country_10m, "polygons")[[which(country_10m$name_long %in% "Greece")]] <- slot(sp_greece, "polygons")[[1]]
+plot(country_10m[country_10m$name_long %in% "Greece",])
+
+# creation de la corse
+sp_crete <- country_10m_map[country_10m_map$name_long %in% "Greece",]
+slot(sp_crete, "polygons")[[which(sp_crete$name_long %in% "Greece")]] <- slot(country_10m_gr_pol, "polygons")[[1]]
+
+sp_crete@data[, c("name", "admin", "adm0_a3",
+                  "adm0_a3_is","adm0_a3_us",
+                  "type",  "subunit",
+                  "continent", "region_un",
+                  "subregion",  "sovereignt")]
+
+sp_crete@data$name <- "Creete"
+sp_crete@data$name_long <- "Creete"
+sp_crete@data$admin <- "Creete"
+sp_crete@data$adm0_a3 <- "CRT"
+sp_crete@data$adm0_a3_is <- "CRT"
+sp_crete@data$adm0_a3_us <- "CRT"
+
+country_10m <- rbind(country_10m, sp_crete)
+
+plot(country_10m)
+plot(country_10m[country_10m$name_long %in% "Greece",])
+plot(country_10m[country_10m$name_long %in% "Creete",])
+
+# chypre : fusion avec la chypre du nord
 plot(country_10m[country_10m$name_long %in% "Cyprus",])
 
-# chypre : fusion avec la chypre du nors
 country_10m_cyprus <- country_10m_map[country_10m_map$name_long %in% c("Cyprus", "Northern Cyprus"), ]
 country_10m_cyprus <- raster::aggregate(country_10m_cyprus, by = c("adm0_a3_is"))
 plot(country_10m_cyprus)
@@ -144,6 +238,26 @@ colnames(europe_countries_ref) <- c("name", "code")
 
 states_10m <- readOGR(dsn = "C:\\Users\\Datastorm\\Downloads\\10m_cultural\\10m_cultural",
                       layer = "ne_10m_admin_1_states_provinces_lakes_shp")
+
+add_ct <- c("Turkey", 
+            "Cyprus", 
+            "Federation of Bosnia and Herzegovina",
+            "Algeria", 
+            "Egypt",
+            "Israel",
+            "Iran",
+            "Iraq",
+            "Jordan",
+            "Lebanon",
+            "Libya",
+            "Morocco",
+            "Saudi Arabia",
+            "Syria",
+            "Tunisia",
+            "United Arab Emirates",
+            "Qatar"
+)
+
 # subset on Europe
 states_10m_europe <- states_10m[states_10m$sr_adm0_a3%in% europe_countries_10m$code | 
                                   states_10m$admin %in% add_ct, ]
@@ -157,16 +271,22 @@ plot(states_10m_europe[states_10m_europe$admin %in% c("Cyprus", "Northern Cyprus
 
 summary(states_10m_europe[states_10m_europe$admin %in% c("Cyprus", "Northern Cyprus"), ])
 
-# chypre : fusion avec la chypre du nors
+# chypre : fusion avec la chypre du nord
 levels(states_10m_europe$admin) <- gsub("Northern Cyprus", "Cyprus", levels(states_10m_europe$admin))
 levels(states_10m_europe$sr_adm0_a3) <- gsub("^CYN$", "CYP", levels(states_10m_europe$sr_adm0_a3))
 
 plot(states_10m_europe[states_10m_europe$admin %in% c("Cyprus"), ])
 
-# remove islands from france
+# remove islands & corsica from france
 plot(states_10m_europe[states_10m_europe$sr_adm0_a3 %in% "FRA", ])
-states_10m_europe <- states_10m_europe[!(states_10m_europe$sr_adm0_a3 %in% "FRA" &  !states_10m_europe$type_en %in% "Region"), ]
+states_10m_europe <- states_10m_europe[!(states_10m_europe$sr_adm0_a3 %in% "FRA" &  !states_10m_europe$type_en %in% "Region") &
+                                           !states_10m_europe$region %in% "Corse", ]
 plot(states_10m_europe[states_10m_europe$sr_adm0_a3 %in% "FRA", ])
+
+# remove creete from greece
+plot(states_10m_europe[states_10m_europe$sr_adm0_a3 %in% "GRC", ])
+states_10m_europe <- states_10m_europe[!states_10m_europe$name_alt %in% "Crete", ]
+plot(states_10m_europe[states_10m_europe$sr_adm0_a3 %in% "GRC", ])
 
 # N0R
 plot(states_10m_europe[states_10m_europe$sr_adm0_a3 %in% "NOR", ])
