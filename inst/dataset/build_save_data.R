@@ -47,6 +47,8 @@ plot(country_10m_map[country_10m_map$name_long %in% "Greece",])
 # country_10m_ref <- readOGR(dsn = "C:\\Users\\Datastorm\\Downloads\\50m_cultural",
 #                            layer = "ne_50m_admin_0_countries")
 # keep only Europe + Turquie
+
+sort(unique(country_10m_map$name_long))
 add_ct <- c("Turkey", 
             "Cyprus", 
             "Federation of Bosnia and Herzegovina",
@@ -64,13 +66,43 @@ add_ct <- c("Turkey",
             "Tunisia",
             "United Arab Emirates",
             "Qatar",
-            "Gaza"
+            "Gaza", 
+            "Mauritania", 
+            "Mali", 
+            "Kuwait", 
+            "Bahrain", 
+            "Oman", 
+            "Yemen",
+            "Georgia", 
+            "Armenia",
+            "Azerbaijan"
 )
 
 country_10m <- country_10m_map[country_10m_map$continent%in% "Europe" | 
                                  country_10m_map$name_long %in% add_ct, ]
 
 plot(country_10m)
+
+plot(country_10m_map[country_10m_map$name_long %in% c("Azerbaijan"),])
+plot(country_10m_map[country_10m_map$name_long %in% c("Armenia"),])
+plot(country_10m_map[country_10m_map$name_long %in% c("Georgia"),])
+plot(country_10m_map[country_10m_map$name_long %in% c("Yemen"),])
+plot(country_10m_map[country_10m_map$name_long %in% c("Oman"),])
+plot(country_10m_map[country_10m_map$name_long %in% c("Bahrain"),])
+plot(country_10m_map[country_10m_map$name_long %in% c("Kuwait"),])
+plot(country_10m_map[country_10m_map$name_long %in% c("Mauritania"),])
+plot(country_10m_map[country_10m_map$name_long %in% c("Mali"),])
+
+# Kosovo : fusion avec la Serbia
+plot(country_10m[country_10m$name_long %in% "Serbia",])
+plot(country_10m[country_10m$name_long %in% c("Serbia", "Kosovo"),])
+
+country_10m_serbie <- country_10m_map[country_10m_map$name_long %in% c("Serbia", "Kosovo"), ]
+country_10m_serbie <- raster::aggregate(country_10m_serbie, by = c("adm0_a3_is"))
+plot(country_10m_serbie)
+
+slot(country_10m, "polygons")[[which(country_10m$name_long %in% "Serbia")]] <- slot(country_10m_serbie, "polygons")[[1]]
+plot(country_10m[country_10m$name_long %in% "Serbia",])
 
 # merge Gaza et West Bank = Palestine
 plot(country_10m_map[country_10m_map$name_long %in% c("West Bank", "Gaza"),])
@@ -86,6 +118,7 @@ country_10m@data$name[country_10m$name_long %in% "Gaza"] <- "Palestine"
 country_10m@data$name_long[country_10m$name_long %in% "Gaza"] <- "Palestine"
 
 plot(country_10m[country_10m$name_long %in% "Palestine",])
+
 
 #-----------------------
 # isolation de la corse
@@ -255,7 +288,16 @@ add_ct <- c("Turkey",
             "Syria",
             "Tunisia",
             "United Arab Emirates",
-            "Qatar"
+            "Qatar",
+            "Mauritania", 
+            "Mali", 
+            "Kuwait", 
+            "Bahrain", 
+            "Oman", 
+            "Yemen",
+            "Georgia", 
+            "Armenia",
+            "Azerbaijan"
 )
 
 # subset on Europe
@@ -270,6 +312,15 @@ plot(states_10m_europe[states_10m_europe$admin %in% "Cyprus", ])
 plot(states_10m_europe[states_10m_europe$admin %in% c("Cyprus", "Northern Cyprus"), ])
 
 summary(states_10m_europe[states_10m_europe$admin %in% c("Cyprus", "Northern Cyprus"), ])
+
+# Kosovo : fusion avec la Serbia
+states_10m_europe@data[states_10m_europe$admin %in% c("Kosovo", "Republic of Serbia"), ]
+plot(states_10m_europe[states_10m_europe$admin %in% c("Republic of Serbia"), ])
+
+levels(states_10m_europe$admin) <- gsub("Kosovo", "Republic of Serbia", levels(states_10m_europe$admin))
+levels(states_10m_europe$sr_adm0_a3) <- gsub("^KOS$", "SRB", levels(states_10m_europe$sr_adm0_a3))
+
+plot(states_10m_europe[states_10m_europe$admin %in% c("Republic of Serbia"), ])
 
 # chypre : fusion avec la chypre du nord
 levels(states_10m_europe$admin) <- gsub("Northern Cyprus", "Cyprus", levels(states_10m_europe$admin))
