@@ -43,7 +43,8 @@ country_10m_map <- readOGR(dsn = "C:\\Users\\Datastorm\\Downloads\\50m_cultural"
 
 plot(country_10m_map[country_10m_map$name_long %in% "Greece",])
 
-
+plot(country_10m_map[country_10m_map$name_long %in% c("Western Sahara"),])
+plot(country_10m_map[country_10m_map$name_long %in% c("Morocco", "Mauritania", "Western Sahara"),])
 # country_10m_ref <- readOGR(dsn = "C:\\Users\\Datastorm\\Downloads\\50m_cultural",
 #                            layer = "ne_50m_admin_0_countries")
 # keep only Europe + Turquie
@@ -103,6 +104,20 @@ plot(country_10m_serbie)
 
 slot(country_10m, "polygons")[[which(country_10m$name_long %in% "Serbia")]] <- slot(country_10m_serbie, "polygons")[[1]]
 plot(country_10m[country_10m$name_long %in% "Serbia",])
+
+# and so rm kosovo
+country_10m <- country_10m[!country_10m$name_long %in% "Kosovo", ]
+
+# merge "Morocco" & "Western Sahara" = "Morocco
+plot(country_10m_map[country_10m_map$name_long %in% c("Western Sahara", "Morocco"),])
+
+country_10m_mor <- country_10m_map[country_10m_map$name_long %in% c("Western Sahara", "Morocco"), ]
+country_10m_mor <- raster::aggregate(country_10m_mor, by = c("adm0_a3_is"), fun = "min")
+country_10m_mor <- rgeos::gSimplify(country_10m_mor, tol=0.09)
+
+slot(country_10m, "polygons")[[which(country_10m$name_long %in% "Morocco")]] <- slot(country_10m_mor, "polygons")[[1]]
+
+plot(country_10m[country_10m$name_long %in% "Morocco",])
 
 # merge Gaza et West Bank = Palestine
 plot(country_10m_map[country_10m_map$name_long %in% c("West Bank", "Gaza"),])
@@ -284,6 +299,7 @@ add_ct <- c("Turkey",
             "Lebanon",
             "Libya",
             "Morocco",
+            "Western Sahara",
             "Saudi Arabia",
             "Syria",
             "Tunisia",
@@ -327,6 +343,14 @@ levels(states_10m_europe$admin) <- gsub("Northern Cyprus", "Cyprus", levels(stat
 levels(states_10m_europe$sr_adm0_a3) <- gsub("^CYN$", "CYP", levels(states_10m_europe$sr_adm0_a3))
 
 plot(states_10m_europe[states_10m_europe$admin %in% c("Cyprus"), ])
+
+# maroc : fusion avec western sahara
+states_10m_europe@data[states_10m_europe$admin %in% c("Morocco"), ]
+states_10m_europe@data[states_10m_europe$admin %in% c("Western Sahara"), ]
+levels(states_10m_europe$admin) <- gsub("Western Sahara", "Morocco", levels(states_10m_europe$admin))
+levels(states_10m_europe$sr_adm0_a3) <- gsub("^SAH$", "MAR", levels(states_10m_europe$sr_adm0_a3))
+
+plot(states_10m_europe[states_10m_europe$admin %in% c("Morocco"), ])
 
 # remove islands & corsica from france
 plot(states_10m_europe[states_10m_europe$sr_adm0_a3 %in% "FRA", ])
