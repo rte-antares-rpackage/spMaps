@@ -255,10 +255,46 @@ slot(pols_esp, "Polygons") <- country_10m[country_10m$adm0_a3 %in% "ESP", ]@poly
 
 # bug leaflet : have to reset comment...
 comment(pols_esp) <- rgeos::createPolygonsComment(pols_esp)
-
 slot(country_10m, "polygons")[[which(country_10m$adm0_a3 %in% "ESP")]] <- pols_esp 
 
 plot(country_10m[country_10m$adm0_a3 %in% "ESP",])
+
+
+# remove dom-tom from holland
+plot(country_10m[country_10m$adm0_a3 %in% "NLD",])
+
+pols_ndl <- slot(country_10m, "polygons")[[which(country_10m$adm0_a3 %in% "NLD")]]
+
+sum_area <- 0
+# min_lat <- NA
+# max_lat <- NA
+# min_lon <- NA
+# max_lon <- NA
+keep_polygons <- sapply(country_10m[country_10m$adm0_a3 %in% "NLD", ]@polygons[[1]]@Polygons, function(x){
+  # print(x@labpt)
+  if(x@labpt[2] > 40){
+    sum_area <<- sum_area + x@area
+    # min_lon <<- min(min_lon, x@coords[, 1], na.rm = T)
+    # min_lat <<- min(min_lat, x@coords[, 2], na.rm = T)
+    # max_lon <<- max(max_lon, x@coords[, 1], na.rm = T)
+    # max_lat <<- max(max_lat, x@coords[, 2], na.rm = T)
+  }
+  x@labpt[2]>40
+})
+
+
+new_order <- country_10m[country_10m$adm0_a3 %in% "NLD", ]@polygons[[1]]@plotOrder[which(keep_polygons)] 
+new_order[order(new_order)] <- 1:length(new_order)
+
+slot(pols_ndl, "area") <- sum_area
+slot(pols_ndl, "plotOrder") <- new_order
+slot(pols_ndl, "Polygons") <- country_10m[country_10m$adm0_a3 %in% "NLD", ]@polygons[[1]]@Polygons[which(keep_polygons)] 
+
+# bug leaflet : have to reset comment...
+comment(pols_ndl) <- rgeos::createPolygonsComment(pols_ndl)
+slot(country_10m, "polygons")[[which(country_10m$adm0_a3 %in% "NLD")]] <- pols_ndl 
+
+plot(country_10m[country_10m$adm0_a3 %in% "NLD",])
 
 # subset on columns
 europe_countries_10m <- country_10m[, c("name", "admin", "adm0_a3",
