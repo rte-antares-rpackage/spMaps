@@ -123,6 +123,7 @@ country_10m_mor <- rgeos::gSimplify(country_10m_mor, tol=0.09)
 slot(country_10m, "polygons")[[which(country_10m$name_long %in% "Morocco")]] <- slot(country_10m_mor, "polygons")[[1]]
 
 plot(country_10m[country_10m$name_long %in% "Morocco",])
+country_10m <- country_10m[!country_10m$name_long %in% "Western Sahara", ]
 
 # merge Gaza et West Bank = Palestine
 plot(country_10m_map[country_10m_map$name_long %in% c("West Bank", "Gaza"),])
