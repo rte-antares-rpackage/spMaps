@@ -183,10 +183,10 @@ country_10m_gr <- country_10m_map[country_10m_map$name_long %in% "Greece",]
 plot(country_10m_gr)
 country_10m_gr_pol <- raster::disaggregate(country_10m_gr)
 
-for(i in 1:nrow(country_10m_gr_pol)){
-  par(ask = T)
-  plot(country_10m_gr_pol[i, ], main = i)
-}
+# for(i in 1:nrow(country_10m_gr_pol)){
+#   par(ask = T)
+#   plot(country_10m_gr_pol[i, ], main = i)
+# }
 
 # modification de la grece
 sp_greece <- raster::aggregate(country_10m_gr_pol[-39,])
@@ -219,6 +219,7 @@ plot(country_10m[country_10m$name_long %in% "Creete",])
 # chypre : fusion avec la chypre du nord
 plot(country_10m_map[country_10m_map$name_long %in% "Cyprus",])
 plot(country_10m_map[country_10m_map$name_long %in% "Northern Cyprus",])
+plot(country_10m[country_10m$name_long %in% "Northern Cyprus",])
 
 country_10m_cyprus <- country_10m_map[country_10m_map$name_long %in% c("Cyprus", "Northern Cyprus"), ]
 country_10m_cyprus <- raster::aggregate(country_10m_cyprus, by = c("adm0_a3_is"))
@@ -442,7 +443,7 @@ usethis::use_data(europe_countries_10m, europe_countries_ref,
                    europe_states_provinces_10m, internal = TRUE, overwrite = T)
 
 
-Africa#------------------------------------------------------------------------------------------#
+#------------------------------------------------------------------------------------------#
 
 library(antaresViz)
 library(spMaps)
@@ -461,17 +462,19 @@ plotMapLayout(ml)
 # Identify leaflet bug with Spain
 #-------------------
 
-# require(leaflet)
-# 
-# map=getSpMaps(countries = c("ESP"))
-# 
-# str(map[map$name %in% 'France',])
-# str(map[map$name %in% 'Spain',])
-# 
-# s <- sp::polygons(map)
-# 
-# plot(s)
-# leaflet(map) %>% addPolygons()
+require(leaflet)
+
+map=getSpMaps(countries = c("ESP"))
+
+str(map[map$name %in% 'France',])
+str(map[map$name %in% 'Spain',])
+
+s <- sp::polygons(map)
+
+plot(s)
+
+map = getSpMaps(countries = c("all"))
+leaflet(map) %>% addPolygons()
 # 
 # leaflet:::derivePolygons
 # leaflet:::polygonData.SpatialPolygons
