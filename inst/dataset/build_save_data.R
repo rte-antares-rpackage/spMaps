@@ -176,6 +176,9 @@ plot(country_10m)
 plot(country_10m[country_10m$name_long %in% "France",])
 plot(country_10m[country_10m$name_long %in% "Corsica",])
 
+# remove mayotte
+
+country_10m <- country_10m[!country_10m$adm0_a3_is %in% "MYT",]
 #-----------------------
 # isolation de la crete
 country_10m_gr <- country_10m_map[country_10m_map$name_long %in% "Greece",]
@@ -264,6 +267,7 @@ comment(pols_esp) <- rgeos::createPolygonsComment(pols_esp)
 slot(country_10m, "polygons")[[which(country_10m$adm0_a3 %in% "ESP")]] <- pols_esp 
 
 plot(country_10m[country_10m$adm0_a3 %in% "ESP",])
+plot(country_10m[country_10m$admin %in% "Spain",])
 
 # remove dom-tom from holland
 plot(country_10m[country_10m$adm0_a3 %in% "NLD",])
@@ -331,7 +335,7 @@ colnames(states_10m@data) <- tolower(colnames(states_10m@data))
 ind_diff <- which(states_10m@data$sov_a3 != states_10m@data$adm0_a3)
 
 sort(unique(states_10m@data$admin))
-View(states_10m@data[ind_diff, ])
+# View(states_10m@data[ind_diff, ])
 add_ct <- c("Turkey", 
             "Cyprus", 
             "Northern Cyprus",
@@ -403,14 +407,14 @@ plot(states_10m_europe[states_10m_europe$adm0_a3 %in% "FRA", ])
 states_10m_europe <- states_10m_europe[!(states_10m_europe$adm0_a3 %in% "FRA" &  !states_10m_europe$type_en %in% "Metropolitan department") &
                                            !states_10m_europe$region %in% "Corse", ]
 plot(states_10m_europe[states_10m_europe$adm0_a3 %in% "FRA", ])
-
+plot(states_10m_europe[states_10m_europe$admin %in% "France", ])
 # remove creete from greece
 plot(states_10m_europe[states_10m_europe$adm0_a3 %in% "GRC", ])
 states_10m_europe <- states_10m_europe[!states_10m_europe$name_alt %in% "Crete", ]
 plot(states_10m_europe[states_10m_europe$adm0_a3 %in% "GRC", ])
 
 # N0R
-View(states_10m_europe@data[states_10m_europe$adm0_a3 %in% "NOR", ])
+# View(states_10m_europe@data[states_10m_europe$adm0_a3 %in% "NOR", ])
 plot(states_10m_europe[states_10m_europe$adm0_a3 %in% "NOR", ])
 states_10m_europe <- states_10m_europe[!(states_10m_europe$adm0_a3 %in% "NOR" & !states_10m_europe$type_en %in% "County"), ]
 plot(states_10m_europe[states_10m_europe$adm0_a3 %in% "NOR", ])
@@ -421,7 +425,7 @@ states_10m_europe <- states_10m_europe[!(states_10m_europe$adm0_a3 %in% "NLD" & 
 plot(states_10m_europe[states_10m_europe$adm0_a3 %in% "NLD", ])
 
 # ESP
-View(states_10m_europe@data[states_10m_europe$adm0_a3 %in% "ESP", ])
+# View(states_10m_europe@data[states_10m_europe$adm0_a3 %in% "ESP", ])
 plot(states_10m_europe[states_10m_europe$adm0_a3 %in% "ESP", ])
 states_10m_europe <- states_10m_europe[!(states_10m_europe$adm0_a3 %in% "ESP" & states_10m_europe$region %in% "Canary Is."), ]
 plot(states_10m_europe[states_10m_europe$adm0_a3 %in% "ESP", ])
