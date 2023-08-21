@@ -8,3 +8,11 @@
 0 errors | 0 warnings | 1 note
 
 * There's a new maintainer to the package. Thank you !
+
+
+for 0.4.0 
+
+0 errors | 0 warnings | 1 note
+
+checking LazyData ... NOTE
+  'LazyData' is specified without a 'data' directory
