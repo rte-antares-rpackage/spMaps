@@ -3,10 +3,7 @@ Type: Package
 Title: Europe SpatialPolygonsDataFrame Builder
 Version: 0.4.1
 Authors@R: c(
-    person(given = "Veronique",
-           family = "Bachelier",
-           role = c("aut", "cre"),
-           email = "veronique.bachelier@rte-france.com"),
+     person("Tatiana", "Vargas", email = "tatiana.vargas@rte-france.com", role = c("aut", "cre")),
     person("Jalal-Edine", "ZAWAM", role = "aut"),
     person("Benoit", "Thieurmel", email = "benoit.thieurmel@datastorm.fr", role = "aut"),
     person("RTE", role = "cph")
