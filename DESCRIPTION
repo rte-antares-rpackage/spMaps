@@ -3,7 +3,7 @@ Type: Package
 Title: Europe SpatialPolygonsDataFrame Builder
 Version: 0.4.1
 Authors@R: c(
-    person("Tatiana", "Vargas", email = "tatiana.vargas@rte-france.com", role = c("aut", "cre")),
+     person("Tatiana", "Vargas", email = "tatiana.vargas@rte-france.com", role = c("aut", "cre")),
     person("Jalal-Edine", "ZAWAM", role = "aut"),
     person("Benoit", "Thieurmel", email = "benoit.thieurmel@datastorm.fr", role = "aut"),
     person("RTE", role = "cph")
@@ -18,9 +18,9 @@ License: GPL (>= 2) | file LICENSE
 Encoding: UTF-8
 Depends: R (>= 2.10), 
     sp,
-    terra,
-    sf
-RoxygenNote: 7.2.2
+    sf,
+    methods
+RoxygenNote: 7.2.3
 Suggests: testthat,
     covr,
     antaresViz

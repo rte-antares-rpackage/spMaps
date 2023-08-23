@@ -14,11 +14,12 @@ getEuropeReferenceTable <- function(){
 #' @export
 #'
 #' @importFrom sf st_cast
+#' @importFrom methods as
 getEuropeCountries <- function(mergeCountry = TRUE){
   europe_countries_10m
   if(mergeCountry){
-    europe_sf <- st_as_sf(europe_countries_10m)
-    aggregated_sf <- st_cast(europe_sf, "MULTIPOLYGON", group = c("code", "admin"))
+    europe_sf <- sf::st_as_sf(europe_countries_10m)
+    aggregated_sf <- sf::st_cast(europe_sf, "MULTIPOLYGON", group = c("code", "admin"))
     europe_countries <- as(aggregated_sf, "Spatial")
     europe_countries$name <- europe_countries$admin
     return(europe_countries)

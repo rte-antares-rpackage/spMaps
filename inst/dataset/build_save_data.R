@@ -26,7 +26,7 @@ plot(country_10m[country_10m$name_long %in% "Cyprus",])
 
 # chypre : fusion avec la chypre du nors
 country_10m_cyprus <- country_10m_map[country_10m_map$name_long %in% c("Cyprus", "Northern Cyprus"), ]
-country_10m_cyprus <- terra::aggregate(country_10m_cyprus, by = c("adm0_a3_is"))
+country_10m_cyprus <- sf::st_cast(country_10m_cyprus, "MULTIPOLYGON", group = "adm0_a3_is")
 plot(country_10m_cyprus)
 
 slot(country_10m, "polygons")[[which(country_10m$name_long %in% "Cyprus")]] <- slot(country_10m_cyprus, "polygons")[[1]]
