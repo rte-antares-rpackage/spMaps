@@ -1,50 +1,23 @@
-require(rgdal)
+require(sf)
 require(sp)
-
-# http://www.naturalearthdata.com/downloads/
-
-#----------------
-# countries - 50m
-#----------------
-
-# country_50m <- readOGR(dsn = "C:\\Users\\Datastorm\\Downloads\\50m_cultural",
-#                        layer = "ne_50m_admin_0_countries")
-#
-# summary(country_50m)
-#
-# # keep only Europe
-# country_50m <- country_50m[country_50m$continent%in% "Europe", ]
-#
-# # subset on some columns
-# europe_countries_50m <- country_50m[, c("name", "name_long", "admin", "adm0_a3",
-#                                         "adm0_a3_is","adm0_a3_us", "type",  "subunit",
-#                                         "su_a3", "pop_est", "pop_year", "continent", "region_un",
-#                                         "subregion",  "sovereignt")]
-#
-# summary(europe_countries_50m)
-#
-# # save as rda
-# devtools::use_data(europe_countries_50m, overwrite = T)
-
-# saveRDS(country_50m, file = "inst/dataset/maps/europe_countries_50m.RDS", overwrite = T)
 
 #----------------
 # countries - 10m
 #----------------
 
-country_10m_map <- readOGR(dsn = "C:\\Users\\Datastorm\\Downloads\\10m_cultural\\10m_cultural",
+country_10m_map <- st_read(dsn = "C:\\Users\\Datastorm\\Downloads\\10m_cultural\\10m_cultural",
                        layer = "ne_10m_admin_0_map_units")
 # 
-# country_10m_ref <- readOGR(dsn = "C:\\Users\\Datastorm\\Downloads\\10m_cultural\\10m_cultural",
+# country_10m_ref <- st_read(dsn = "C:\\Users\\Datastorm\\Downloads\\10m_cultural\\10m_cultural",
 #                        layer = "ne_10m_admin_0_countries")
 
-country_10m_map <- readOGR(dsn = "C:\\Users\\Datastorm\\Downloads\\50m_cultural",
+country_10m_map <- st_read(dsn = "C:\\Users\\Datastorm\\Downloads\\50m_cultural",
                            layer = "ne_50m_admin_0_map_units")
 
-# country_10m_ref <- readOGR(dsn = "C:\\Users\\Datastorm\\Downloads\\50m_cultural",
+# country_10m_ref <- st_read(dsn = "C:\\Users\\Datastorm\\Downloads\\50m_cultural",
 #                            layer = "ne_50m_admin_0_countries")
 # keep only Europe + Turquie
-country_10m <- country_10m_map[country_10m_map$continent%in% "Europe" | 
+country_10m <- country_10m_map[country_10m_map$continent%in% "Europe" |
                                  country_10m_map$name_long %in% c("Turkey", "Cyprus"), ]
 summary(country_10m)
 
@@ -53,7 +26,7 @@ plot(country_10m[country_10m$name_long %in% "Cyprus",])
 
 # chypre : fusion avec la chypre du nors
 country_10m_cyprus <- country_10m_map[country_10m_map$name_long %in% c("Cyprus", "Northern Cyprus"), ]
-country_10m_cyprus <- raster::aggregate(country_10m_cyprus, by = c("adm0_a3_is"))
+country_10m_cyprus <- terra::aggregate(country_10m_cyprus, by = c("adm0_a3_is"))
 plot(country_10m_cyprus)
 
 slot(country_10m, "polygons")[[which(country_10m$name_long %in% "Cyprus")]] <- slot(country_10m_cyprus, "polygons")[[1]]
@@ -91,9 +64,6 @@ slot(pols_esp, "area") <- sum_area
 slot(pols_esp, "plotOrder") <- new_order
 slot(pols_esp, "Polygons") <- country_10m[country_10m$adm0_a3 %in% "ESP", ]@polygons[[1]]@Polygons[which(keep_polygons)] 
 
-# bug leaflet : have to reset comment...
-comment(pols_esp) <- rgeos::createPolygonsComment(pols_esp)
-
 slot(country_10m, "polygons")[[which(country_10m$adm0_a3 %in% "ESP")]] <- pols_esp 
 
 plot(country_10m[country_10m$adm0_a3 %in% "ESP",])
@@ -119,10 +89,10 @@ colnames(europe_countries_ref) <- c("name", "code")
 # states - 10m
 #----------------
 #
-# states_10m <- readOGR(dsn = "C:\\Users\\Datastorm\\Downloads\\10m_cultural\\10m_cultural",
+# states_10m <- st_read(dsn = "C:\\Users\\Datastorm\\Downloads\\10m_cultural\\10m_cultural",
 #                       layer = "ne_10m_admin_1_states_provinces_shp")
 
-states_10m <- readOGR(dsn = "C:\\Users\\Datastorm\\Downloads\\10m_cultural\\10m_cultural",
+states_10m <- st_read(dsn = "C:\\Users\\Datastorm\\Downloads\\10m_cultural\\10m_cultural",
                       layer = "ne_10m_admin_1_states_provinces_lakes_shp")
 # subset on Europe
 states_10m_europe <- states_10m[states_10m$sr_adm0_a3%in% europe_countries_10m$code | 
@@ -194,38 +164,3 @@ ml<-mapLayout(readLayout())
 plotMap(myData1, ml)
 
 plotMapLayout(ml)
-
-#-------------------
-# Identify leaflet bug with Spain
-#-------------------
-
-# require(leaflet)
-# 
-# map=getSpMaps(countries = c("ESP"))
-# 
-# str(map[map$name %in% 'France',])
-# str(map[map$name %in% 'Spain',])
-# 
-# s <- sp::polygons(map)
-# 
-# plot(s)
-# leaflet(map) %>% addPolygons()
-# 
-# leaflet:::derivePolygons
-# leaflet:::polygonData.SpatialPolygons
-# leaflet:::polygonData(s)
-# 
-# leaflet:::sp_bbox(s)
-# leaflet:::to_multipolygon_list.SpatialPolygons
-# 
-# pgons <- s@polygons[[1]]
-# comment(pgons)
-# rgeos::createPolygonsComment(pgons)
-# leaflet:::to_multipolygon.Polygons
-# lapply(pgons@polygons, to_multipolygon)
-# 
-# str(s)
-# s@polygons
-# pgons = leaflet:::derivePolygons(map, lng = NULL, lat = NULL, T, T, 
-#                        "addPolygons")
-# 
