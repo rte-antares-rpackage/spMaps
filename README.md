@@ -3,9 +3,8 @@
 > The `spMaps` package provides functions allow to build custom maps.
 
 <!-- badges: start -->
-[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/spMaps)](https://cran.r-project.org/package=spMaps)[![Build status](https://ci.appveyor.com/api/projects/status/cfjgghysd82xb99c?svg=true)](https://ci.appveyor.com/project/rte-antares-rpackage/spmaps)
-[![Build Status](https://travis-ci.org/rte-antares-rpackage/spMaps.svg?branch=master)](https://travis-ci.org/rte-antares-rpackage/spMaps)
-[![codecov](https://codecov.io/gh/rte-antares-rpackage/spMaps/branch/master/graph/badge.svg)](https://codecov.io/gh/rte-antares-rpackage/spMaps)
+
+[![Codecov test coverage](https://codecov.io/gh/rte-antares-rpackage/spMaps/branch/master/graph/badge.svg)](https://app.codecov.io/gh/rte-antares-rpackage/spMaps?branch=master)
 <!-- badges: end -->
 
 
