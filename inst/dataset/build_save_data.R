@@ -12,7 +12,8 @@ country_10m_map <- sf::st_read(dsn = "D:\\Users\\mahoudiabd\\Downloads\\Datastor
 # country_10m_ref <- readOGR(dsn = "C:\\Users\\Datastorm\\Downloads\\10m_cultural\\10m_cultural",
 #                        layer = "ne_10m_ADMIN_0_countries")
 
-country_10m_map <- sf::st_read(dsn = "D:\\Users\\mahoudiabd\\Downloads\\Datastorm",layer = "ne_50m_ADMIN_0_map_units")
+country_10m_map <- sf::st_read(dsn = "D:\\Users\\mahoudiabd\\Downloads\\Datastorm",
+                               layer = "ne_50m_ADMIN_0_map_units")
 
 # country_10m_ref <- st_read(dsn = "C:\\Users\\Datastorm\\Downloads\\50m_cultural",
 #                            layer = "ne_50m_ADMIN_0_countries")
@@ -25,65 +26,61 @@ plot(country_10m)
 plot(country_10m[country_10m$NAME_LONG %in% "Cyprus",])
 
 # chypre : fusion avec la chypre du nors
-country_10m_cyprus <- country_10m_map[country_10m_map$NAME_LONG %in% c("Cyprus", "Northern Cyprus"), ]
-country_10m_cyprus <- sf::st_cast(country_10m_cyprus, "MULTIPOLYGON", group = "ADM0_A3_is")
+########
 
-plot(country_10m_cyprus)
+# Subset data
+country_cyprus <- country_10m_map[country_10m_map$NAME_LONG %in% c("Cyprus", "Northern Cyprus"), ]# Perform a union of geometries
+union_geometry <- st_union(country_cyprus$geometry)# Replace the geometry of the "Cyprus" feature in the original dataset
+country_10m[country_10m$NAME_LONG == "Cyprus", "geometry"] <- union_geometry
 
-slot(country_10m, "polygons")[[which(country_10m$NAME_LONG %in% "Cyprus")]] <- slot(country_10m_cyprus, "polygons")[[1]]
-plot(country_10m[country_10m$NAME_LONG %in% "Cyprus",])
+# Plot the updated dataset
+plot(country_10m[country_10m$NAME_LONG %in% "Cyprus", ])
+
+
+###########
+
+#slot(country_10m, "polygons")[[which(country_10m$NAME_LONG %in% "Cyprus")]] <- slot(country_10m_cyprus, "polygons")[[1]]
 
 # remove canaries from spain
 # plot(country_10m[country_10m$ADM0_A3 %in% "ESP",])
 
-pols_esp <- slot(country_10m, "polygons")[[which(country_10m$ADM0_A3 %in% "ESP")]]
+pols_esp <- country_10m[country_10m$ADM0_A3 == "ESP", ]
 
-sum_area <- 0
-# min_lat <- NA
-# max_lat <- NA
-# min_lon <- NA
-# max_lon <- NA
-keep_polygons <- sapply(country_10m[country_10m$ADM0_A3 %in% "ESP", ]@polygons[[1]]@Polygons, function(x){
-  # canaries : lattitude < 30
-  if(x@labpt[2] > 30){
-    sum_area <<- sum_area + x@area
-    # min_lon <<- min(min_lon, x@coords[, 1], na.rm = T)
-    # min_lat <<- min(min_lat, x@coords[, 2], na.rm = T)
-    # max_lon <<- max(max_lon, x@coords[, 1], na.rm = T)
-    # max_lat <<- max(max_lat, x@coords[, 2], na.rm = T)   
-  }
-  x@labpt[2]>30
-})
+#########
 
-# new_bbox <- matrix(c(min_lon, max_lon, min_lat, max_lat), nrow = 2, ncol = 2, byrow = T, 
-#                    dimNAMEs = list(c("x", "y"), c("min", "max")))
+# Assuming country_10m is your sf object
+spain <- country_10m[country_10m$ADM0_A3 %in% "ESP", ]
+# Extract the geometries and calculate sum area
+spain_polygons <- spain$geometry
+sum_area <- sum(st_area(spain_polygons[st_coordinates(st_centroid(spain_polygons))[ ,2] > 30]))
+# Calculate new order
+new_order <- seq_along(spain_polygons[st_coordinates(st_centroid(spain_polygons))[ ,2] > 30])
+# Update the order of the geometries
+spain_polygons[st_coordinates(st_centroid(spain_polygons))[ ,2] > 30] <- spain_polygons[new_order]
+# Update the area attribute
+spain$area <- sum_area
+# Update the geometry
+spain$geometry <- spain_polygons
+# Plot the modified polygons
+plot(spain)
 
-new_order <- country_10m[country_10m$ADM0_A3 %in% "ESP", ]@polygons[[1]]@plotOrder[which(keep_polygons)] 
-new_order[order(new_order)] <- 1:length(new_order)
-
-slot(pols_esp, "area") <- sum_area
-slot(pols_esp, "plotOrder") <- new_order
-slot(pols_esp, "Polygons") <- country_10m[country_10m$ADM0_A3 %in% "ESP", ]@polygons[[1]]@Polygons[which(keep_polygons)] 
-
-slot(country_10m, "polygons")[[which(country_10m$ADM0_A3 %in% "ESP")]] <- pols_esp 
-
-plot(country_10m[country_10m$ADM0_A3 %in% "ESP",])
+#########
 
 # subset on columns
 europe_countries_10m <- country_10m[, c("NAME", "ADMIN", "ADM0_A3",
-                                        "ADM0_A3_IS","ADM0_A3_US",
+                                        "ADM0_A3_US",
                                         "TYPE",  "SUBUNIT",
                                         "CONTINENT", "REGION_UN",
                                         "SUBREGION",  "SOVEREIGNT")]
 summary(europe_countries_10m)
 plot(europe_countries_10m)
 
-NAMEs(europe_countries_10m) <- gsub("^ADM0_A3$", "CODE", NAMEs(europe_countries_10m))
+names(europe_countries_10m) <- gsub("^ADM0_A3$", "CODE", names(europe_countries_10m))
 
 # ref table
 europe_countries_ref <- unique(data.frame(europe_countries_10m[, c("ADMIN", "CODE")],
                                      stringsAsFactors = F))
-colNAMEs(europe_countries_ref) <- c("NAME", "CODE")
+colnames(europe_countries_ref) <- c("NAME", "CODE")
 
 
 #----------------
@@ -93,62 +90,59 @@ colNAMEs(europe_countries_ref) <- c("NAME", "CODE")
 # states_10m <- st_read(dsn = "C:\\Users\\Datastorm\\Downloads\\10m_cultural\\10m_cultural",
 #                       layer = "ne_10m_ADMIN_1_states_provinces_shp")
 
-states_10m <- st_read(dsn = "C:\\Users\\Datastorm\\Downloads\\10m_cultural\\10m_cultural",
-                      layer = "ne_10m_ADMIN_1_states_provinces_lakes_shp")
+states_10m <- st_read(dsn = "D:\\Users\\mahoudiabd\\Downloads\\Datastorm",
+                      layer = "ne_10m_ADMIN_1_states_provinces_lakes")
 # subset on Europe
-states_10m_europe <- states_10m[states_10m$sr_ADM0_A3%in% europe_countries_10m$CODE | 
-                                  states_10m$ADMIN %in% c("Cyprus", "Northern Cyprus"), ]
+
+states_10m_europe <- states_10m[states_10m$adm0_a3%in% europe_countries_10m$CODE | 
+                                  states_10m$admin %in% c("Cyprus", "Northern Cyprus"), ]
 summary(states_10m_europe)
 
-table(states_10m_europe$TYPE_en)
+table(states_10m_europe$type_en)
 plot(states_10m_europe)
 
-plot(states_10m_europe[states_10m_europe$ADMIN %in% "Cyprus", ])
-plot(states_10m_europe[states_10m_europe$ADMIN %in% c("Cyprus", "Northern Cyprus"), ])
+plot(states_10m_europe[states_10m_europe$admin %in% "Cyprus", ])
+plot(states_10m_europe[states_10m_europe$admin %in% c("Cyprus", "Northern Cyprus"), ])
 
-summary(states_10m_europe[states_10m_europe$ADMIN %in% c("Cyprus", "Northern Cyprus"), ])
+summary(states_10m_europe[states_10m_europe$admin %in% c("Cyprus", "Northern Cyprus"), ])
 
 # chypre : fusion avec la chypre du nors
-levels(states_10m_europe$ADMIN) <- gsub("Northern Cyprus", "Cyprus", levels(states_10m_europe$ADMIN))
-levels(states_10m_europe$sr_ADM0_A3) <- gsub("^CYN$", "CYP", levels(states_10m_europe$sr_ADM0_A3))
+levels(states_10m_europe$admin) <- gsub("Northern Cyprus", "Cyprus", levels(states_10m_europe$admin))
+levels(states_10m_europe$adm0_a3) <- gsub("^CYN$", "CYP", levels(states_10m_europe$adm0_a3))
 
-plot(states_10m_europe[states_10m_europe$ADMIN %in% c("Cyprus"), ])
+plot(states_10m_europe[states_10m_europe$admin %in% c("Cyprus"), ])
 
 # remove islands from france
-plot(states_10m_europe[states_10m_europe$sr_ADM0_A3 %in% "FRA", ])
-states_10m_europe <- states_10m_europe[!(states_10m_europe$sr_ADM0_A3 %in% "FRA" &  !states_10m_europe$TYPE_en %in% "Region"), ]
-plot(states_10m_europe[states_10m_europe$sr_ADM0_A3 %in% "FRA", ])
+plot(states_10m_europe[states_10m_europe$adm0_a3 %in% "FRA", ])
+states_10m_europe <- states_10m_europe[!(states_10m_europe$adm0_a3 %in% "FRA" &  !states_10m_europe$type_en %in% "Region"), ]
+plot(states_10m_europe[states_10m_europe$adm0_a3 %in% "FRA", ])
 
 # N0R
-plot(states_10m_europe[states_10m_europe$sr_ADM0_A3 %in% "NOR", ])
-states_10m_europe <- states_10m_europe[!(states_10m_europe$sr_ADM0_A3 %in% "NOR" & !states_10m_europe$TYPE_en %in% "County"), ]
-plot(states_10m_europe[states_10m_europe$sr_ADM0_A3 %in% "NOR", ])
+plot(states_10m_europe[states_10m_europe$adm0_a3 %in% "NOR", ])
+states_10m_europe <- states_10m_europe[!(states_10m_europe$adm0_a3 %in% "NOR" & !states_10m_europe$type_en %in% "County"), ]
+plot(states_10m_europe[states_10m_europe$adm0_a3 %in% "NOR", ])
 
 # NLD
-plot(states_10m_europe[states_10m_europe$sr_ADM0_A3 %in% "NLD", ])
-states_10m_europe <- states_10m_europe[!(states_10m_europe$sr_ADM0_A3 %in% "NLD" & !states_10m_europe$TYPE_en %in% "Province"), ]
-plot(states_10m_europe[states_10m_europe$sr_ADM0_A3 %in% "NLD", ])
-
-# ESP
-plot(states_10m_europe[states_10m_europe$sr_ADM0_A3 %in% "ESP", ])
-states_10m_europe <- states_10m_europe[!(states_10m_europe$sr_ADM0_A3 %in% "ESP" & states_10m_europe$NAME %in% "ESP-00 (Canary Is. aggregation)"), ]
-plot(states_10m_europe[states_10m_europe$sr_ADM0_A3 %in% "ESP", ])
+plot(states_10m_europe[states_10m_europe$adm0_a3 %in% "NLD", ])
+states_10m_europe <- states_10m_europe[!(states_10m_europe$adm0_a3 %in% "NLD" & !states_10m_europe$type_en %in% "Province"), ]
+plot(states_10m_europe[states_10m_europe$adm0_a3 %in% "NLD", ])
 
 # for(co in europe_countries_ref$CODE){
 #   print(co)
 #   par(ask = T)
-#   plot(states_10m_europe[!states_10m_europe$sr_ADM0_A3 %in% co, ])
+#   plot(states_10m_europe[!states_10m_europe$adm0_a3 %in% co, ])
 # }
 
 # subset on columns
-europe_states_provinces_10m <- states_10m_europe[, c("ADMIN", "sr_ADM0_A3", "sr_sov_a3", "adm1_CODE",
-                                                     "NAME", "TYPE", "TYPE_en", "region")]
+europe_states_provinces_10m <- states_10m_europe[, c("admin", "adm0_a3", "sov_a3", "adm1_code",
+                                                     "name", "type", "type_en", "region")]
 summary(europe_states_provinces_10m)
 
-NAMEs(europe_states_provinces_10m) <- gsub("^sr_ADM0_A3$", "CODE", NAMEs(europe_states_provinces_10m))
+names(europe_states_provinces_10m) <- gsub("^adm0_a3$", "code", names(europe_states_provinces_10m))
 
-devtools::use_data(europe_countries_10m, europe_countries_ref, 
-                   europe_states_provinces_10m, internal = TRUE, overwrite = T)
+
+## Export des tables vers le dossier inst, ne pas lancer si on ne souhaite pas écraser les données.
+#devtools::use_data(europe_countries_10m, europe_countries_ref, europe_states_provinces_10m, internal = TRUE, overwrite = T)
 
 
 #------------------------------------------------------------------------------------------#
