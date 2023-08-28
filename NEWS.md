@@ -1,3 +1,5 @@
+# rgeos and raster replaced by sf
+
 # changes in version 0.4.1 (2023-08-02)
 * fix file "LICENCE" format to UTF-8
 * fix note on 0.4.0 (lazy data)
