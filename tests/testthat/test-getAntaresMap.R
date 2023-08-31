@@ -1,4 +1,4 @@
-#Copyright © 2016 RTE Réseau de transport d’électricité
+# COPYRIGHT : 2016 RTE Electricity transmission network 
 context("Build map")
 
 test_that("Default map", {
