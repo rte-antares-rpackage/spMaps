@@ -3,8 +3,8 @@
 > The `spMaps` package provides functions allow to build custom maps.
 
 <!-- badges: start -->
-[![R-CMD-check](https://github.com/rte-antares-rpackage/spMaps/actions/workflows/check-standard.yaml/badge.svg)](https://github.com/rte-antares-rpackage/spMaps/actions/workflows/check-standard.yaml)
-[![Codecov test coverage](https://codecov.io/gh/rte-antares-rpackage/spMaps/branch/master/graph/badge.svg)](https://app.codecov.io/gh/rte-antares-rpackage/spMaps?branch=master)
+[![R-CMD-check](https://github.com/rte-antares-rpackage/spMaps/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/rte-antares-rpackage/spMaps/actions/workflows/R-CMD-check.yaml)
+[![Codecov test coverage](https://codecov.io/gh/rte-antares-rpackage/spMaps/graph/badge.svg)](https://app.codecov.io/gh/rte-antares-rpackage/spMaps)
 [![CRAN status](https://www.r-pkg.org/badges/version/spMaps)](https://CRAN.R-project.org/package=spMaps)
 <!-- badges: end -->
 
