@@ -1,3 +1,11 @@
+# spMaps 0.5.1.9000
+
+GITHUB ACTIONS :  
+
+* Actions artifacts v3 is closing down, update to v4  
+* test-coverage.yaml updated 
+
+
 # changes in version 0.5.0 (2023-08-31)
 
 * rgeos and raster replaced by sf
